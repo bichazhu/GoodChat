@@ -39,15 +39,18 @@ public class GlobalChatActivity extends ListActivity {
     // First we get a reference to the location of the user's name data:
     //ref = new Firebase(appURL + "/GlobalChat/" + getCourseName() + "/" + getDate());
     if(getIntent().getBooleanExtra("create", true))
+    {
     	ref = new Firebase(appURL + "/GlobalChat/").push().child(getCourseName());
+    	// User list, the first user is the creator
+    	ref.child("UserList").child(username).setValue("creator");
+    	setupUserList();
+    }
     else
     {
     	String path[] = getCourseName().split("@ ");
     	ref = new Firebase(appURL + "/GlobalChat/").child(path[1]).child(path[0]);
     }
-    // User list, the first user is the creator
-    ref.child("UserList").child(username).setValue("Creator");
-    setupUserList();
+    
     ref = ref.child(getDate());
     uniqueCourseNumber = ref.getParent().getParent().getName();
     
