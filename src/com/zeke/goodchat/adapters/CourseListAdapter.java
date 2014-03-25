@@ -29,7 +29,8 @@ public class CourseListAdapter extends BaseAdapter {
       ref.addChildEventListener(new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-            String courseName = snapshot.getName();
+            String courseName = snapshot.getChildren().iterator().next().getName() +
+            					"@ " + snapshot.getName();
             courses.add(courseName);
             
             notifyDataSetChanged();
@@ -37,7 +38,8 @@ public class CourseListAdapter extends BaseAdapter {
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-          String courseName = snapshot.getName();
+          String courseName = snapshot.getChildren().iterator().next().getName() +
+							  "@ " + snapshot.getName();
           courses.set(courses.indexOf(courseName), courseName);
           
           notifyDataSetChanged();
@@ -45,7 +47,8 @@ public class CourseListAdapter extends BaseAdapter {
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
-          String courseName = snapshot.getName();
+          String courseName = snapshot.getChildren().iterator().next().getName() +
+							  "@ " + snapshot.getName();
           courses.remove(courses.indexOf(courseName));
           notifyDataSetChanged();
         }

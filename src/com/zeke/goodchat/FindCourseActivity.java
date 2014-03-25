@@ -29,7 +29,7 @@ public class FindCourseActivity extends Activity {
     setTitle("Find Course");
     
     // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL + "/GlobalChat");
+    ref = new Firebase(appURL + "/GlobalChat/");
 
     CourseListAdapter adapter = new CourseListAdapter(this, ref);
     listview =  (ListView) findViewById(R.id.listview_courses);

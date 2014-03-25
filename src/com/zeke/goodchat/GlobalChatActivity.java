@@ -24,6 +24,7 @@ public class GlobalChatActivity extends ListActivity {
   private String username;
   private Firebase ref;
   private ChatListAdapter chatListAdapter;
+  private String uniqueCourseNumber;
   
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
   
@@ -36,7 +37,19 @@ public class GlobalChatActivity extends ListActivity {
     setupUsername();
         
     // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL + "/GlobalChat/" + getCourseName() + "/" + getDate());
+    //ref = new Firebase(appURL + "/GlobalChat/" + getCourseName() + "/" + getDate());
+    if(getIntent().getBooleanExtra("create", true))
+    	ref = new Firebase(appURL + "/GlobalChat/").push().child(getCourseName());
+    else
+    {
+    	String path[] = getCourseName().split("@ ");
+    	ref = new Firebase(appURL + "/GlobalChat/").child(path[1]).child(path[0]);
+    }
+    // User list, the first user is the creator
+    ref.child("UserList").child(username).setValue("Creator");
+    setupUserList();
+    ref = ref.child(getDate());
+    uniqueCourseNumber = ref.getParent().getParent().getName();
     
     // Setup our input methods. Enter key on the keyboard or pushing the send button
     EditText inputText = (EditText)findViewById(R.id.messageInput);
@@ -59,7 +72,13 @@ public class GlobalChatActivity extends ListActivity {
 
   }
 
-  @Override
+  private void setupUserList() {
+	  // Setup the user list: an example!!!
+	  ref.child("UserList").child("user2").setValue("member");
+	  ref.child("UserList").child("user3").setValue("member");
+  }
+
+@Override
   public void onStart() {
       super.onStart();
       // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes

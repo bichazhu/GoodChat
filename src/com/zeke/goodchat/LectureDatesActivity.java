@@ -27,7 +27,10 @@ public class LectureDatesActivity extends Activity {
     setTitle(getCourseName());
     
     // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL + "/GlobalChat/" + getCourseName());
+    //ref = new Firebase(appURL + "/GlobalChat/" + getCourseName());
+    String path[] = getCourseName().split("@ ");
+    ref = new Firebase(appURL + "/GlobalChat/");
+    ref = ref.child(path[1]).child(path[0]);
 
     LectureDatesListAdapter adapter = new LectureDatesListAdapter(this, ref);
     listview =  (ListView) findViewById(R.id.listview_courses);
@@ -42,6 +45,7 @@ public class LectureDatesActivity extends Activity {
         Intent startGlobalChatActivity = new Intent(LectureDatesActivity.this, GlobalChatActivity.class);
         startGlobalChatActivity.putExtra("course_name", getCourseName());
         startGlobalChatActivity.putExtra("lecture_date", lecture_date.getText().toString());
+        startGlobalChatActivity.putExtra("create", false);
         startActivity(startGlobalChatActivity);
       }
     });

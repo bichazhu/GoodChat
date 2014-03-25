@@ -155,9 +155,10 @@ public class MainActivity extends Activity implements OnClickListener {
                 String course_name = edittext_new_course_name.getText().toString();
                 
                 if(!course_name.isEmpty()) {
-                  Intent startLoginActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
-                  startLoginActivity.putExtra("course_name", course_name);
-                  startActivity(startLoginActivity);
+                  Intent startGlobalChatActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
+                  startGlobalChatActivity.putExtra("course_name", course_name);
+                  startGlobalChatActivity.putExtra("create", true);
+                  startActivity(startGlobalChatActivity);
                 } else {
                   showShortToast("Please enter a course name");
                 }

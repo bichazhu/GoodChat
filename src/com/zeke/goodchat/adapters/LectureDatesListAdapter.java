@@ -30,35 +30,43 @@ public class LectureDatesListAdapter extends BaseAdapter {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             String courseDate = snapshot.getName();
-            courseDate = formatCourseDate(courseDate);
-            
-            if(!courseDate.equals("")) {
-              courseDates.add(courseDate);
+            if(!courseDate.equals("UserList"))
+            {
+	            courseDate = formatCourseDate(courseDate);
+	            
+	            if(!courseDate.equals("")) {
+	              courseDates.add(courseDate);
+	            }
+	            notifyDataSetChanged();
             }
-            
-            notifyDataSetChanged();
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
           String courseDate = snapshot.getName();
-          courseDate = formatCourseDate(courseDate);
-          
-          if(!courseDate.equals("")) {
-            courseDates.set(courseDates.indexOf(courseDate), courseDate);
+          if(!courseDate.equals("UserList"))
+          {
+        	  courseDate = formatCourseDate(courseDate);
+	          
+	          if(!courseDate.equals("")) {
+	            courseDates.set(courseDates.indexOf(courseDate), courseDate);
+	          }
+	          
+	          notifyDataSetChanged();
           }
-          
-          notifyDataSetChanged();
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
           String courseDate = snapshot.getName();
-          courseDate = formatCourseDate(courseDate);
-          if(!courseDate.equals("")) {
-            courseDates.remove(courseDates.indexOf(courseDate));
+          if(!courseDate.equals("UserList"))
+          {
+        	  courseDate = formatCourseDate(courseDate);
+	          if(!courseDate.equals("")) {
+	            courseDates.remove(courseDates.indexOf(courseDate));
+	          }
+	          notifyDataSetChanged();
           }
-          notifyDataSetChanged();
         }
 
         @Override
