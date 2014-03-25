@@ -38,7 +38,7 @@ public class GlobalChatActivity extends ListActivity {
         
     // First we get a reference to the location of the user's name data:
     //ref = new Firebase(appURL + "/GlobalChat/" + getCourseName() + "/" + getDate());
-    if(getIntent().getBooleanExtra("create", true))
+    if(getIntent().getBooleanExtra("create", false))
     {
     	ref = new Firebase(appURL + "/GlobalChat/").push().child(getCourseName());
     	// User list, the first user is the creator

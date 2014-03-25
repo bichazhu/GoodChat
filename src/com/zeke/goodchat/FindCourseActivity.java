@@ -1,5 +1,7 @@
 package com.zeke.goodchat;
 
+import java.util.Iterator;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,14 +12,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.zeke.goodchat.adapters.CourseListAdapter;
 
 public class FindCourseActivity extends Activity {
 
   private Firebase ref;
   ListView listview;
+  private String username;
 
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
   
@@ -27,6 +34,7 @@ public class FindCourseActivity extends Activity {
     setContentView(R.layout.course_list);
     
     setTitle("Find Course");
+    username = getIntent().getStringExtra("username");
     
     // First we get a reference to the location of the user's name data:
     ref = new Firebase(appURL + "/GlobalChat/");
@@ -40,7 +48,7 @@ public class FindCourseActivity extends Activity {
       @Override
       public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         TextView course_name = (TextView) v.findViewById(R.id.textview_course_name);        
-        createLectureAlertDialog(course_name.getText().toString());
+        checkAccessibility(course_name.getText().toString());
       }
     });
   }
@@ -62,9 +70,11 @@ public class FindCourseActivity extends Activity {
         .setPositiveButton("Create",
             new DialogInterface.OnClickListener() {
               public void onClick( final DialogInterface dialog, int whichButton) {
-                  Intent startLoginActivity = new Intent(FindCourseActivity.this, GlobalChatActivity.class);
-                  startLoginActivity.putExtra("course_name", course_name);
-                  startActivity(startLoginActivity);
+                  Intent GlobalChatActivity = new Intent(FindCourseActivity.this, GlobalChatActivity.class);
+                  GlobalChatActivity.putExtra("course_name", course_name);
+                  GlobalChatActivity.putExtra("username", username);
+                  GlobalChatActivity.putExtra("create", false);
+                  startActivity(GlobalChatActivity);
               }
             })
         .setNeutralButton("Find", 
@@ -72,6 +82,7 @@ public class FindCourseActivity extends Activity {
               public void onClick(DialogInterface dialog, int which) {
                 Intent startLectureDatesActivity = new Intent(FindCourseActivity.this, LectureDatesActivity.class);
                 startLectureDatesActivity.putExtra("course_name", course_name);
+                startLectureDatesActivity.putExtra("username", username);
                 startActivity(startLectureDatesActivity);
               }
             })
@@ -84,4 +95,32 @@ public class FindCourseActivity extends Activity {
     alert.show();
   }
   
+  private void createToast(String msg){
+	  Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
+  
+  private void checkAccessibility(String courseName){
+	  String path[] = courseName.split("@ ");
+	  ref.child(path[1]).child(path[0]).child("UserList").child(username).addListenerForSingleValueEvent(new ValueEventListener(){
+		@Override
+		public void onCancelled(FirebaseError arg0) {
+		}
+
+		@Override
+		public void onDataChange(DataSnapshot snap) {
+			String title = (String) snap.getValue();
+			if(title==null)
+			{
+				createToast("You are not registered in this course!");
+			}
+			else
+			{
+				String courseName = snap.getRef().getParent().getParent().getName() + 
+									"@ " + snap.getRef().getParent().getParent().getParent().getName();
+				createLectureAlertDialog(courseName);
+			}
+		}
+		  
+	  });
+  }
 }

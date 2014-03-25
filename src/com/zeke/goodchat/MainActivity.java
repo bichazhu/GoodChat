@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements OnClickListener {
       case R.id.button_find_course:
       default:
         Intent startFindCourseActivity = new Intent(MainActivity.this, FindCourseActivity.class);
+        startFindCourseActivity.putExtra("username", username);
         startActivity(startFindCourseActivity);
         break;
     }
