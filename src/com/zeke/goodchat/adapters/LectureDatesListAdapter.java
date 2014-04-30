@@ -30,7 +30,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             String courseDate = snapshot.getName();
-            if(!courseDate.equals("UserList"))
+            if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
             {
 	            courseDate = formatCourseDate(courseDate);
 	            
@@ -44,7 +44,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
           String courseDate = snapshot.getName();
-          if(!courseDate.equals("UserList"))
+          if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
           {
         	  courseDate = formatCourseDate(courseDate);
 	          
@@ -59,7 +59,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
           String courseDate = snapshot.getName();
-          if(!courseDate.equals("UserList"))
+          if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
           {
         	  courseDate = formatCourseDate(courseDate);
 	          if(!courseDate.equals("")) {

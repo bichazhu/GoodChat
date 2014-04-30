@@ -62,11 +62,13 @@ public class FindCourseActivity extends Activity {
   /**
    * Creates an Alert Dialog for user to create/find lecture and proceed.
    */
-  private void createLectureAlertDialog(final String course_name) {
+  private void createLectureAlertDialog(final String course_name, final String title) {
     
     // get the alert dialog ready for user
     final AlertDialog.Builder alert = new AlertDialog.Builder( FindCourseActivity.this);
     alert.setMessage("Create or Find Lecture?")
+    	//
+    	/*
         .setPositiveButton("Create",
             new DialogInterface.OnClickListener() {
               public void onClick( final DialogInterface dialog, int whichButton) {
@@ -77,7 +79,18 @@ public class FindCourseActivity extends Activity {
                   startActivity(GlobalChatActivity);
               }
             })
-        .setNeutralButton("Find", 
+        */
+    	.setPositiveButton("ClassRoom", 
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+            	Intent startLocalSessionActivity = new Intent(FindCourseActivity.this, SessionMainActivity.class);
+            	startLocalSessionActivity.putExtra("course_name", course_name);
+            	startLocalSessionActivity.putExtra("username", username);
+            	startLocalSessionActivity.putExtra("title",title);
+                startActivity(startLocalSessionActivity);
+              }
+            })
+        .setNeutralButton("FindPrevious", 
             new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int which) {
                 Intent startLectureDatesActivity = new Intent(FindCourseActivity.this, LectureDatesActivity.class);
@@ -92,6 +105,7 @@ public class FindCourseActivity extends Activity {
                 dialog.cancel();
               }
             });
+    
     alert.show();
   }
   
@@ -99,6 +113,11 @@ public class FindCourseActivity extends Activity {
 	  Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
   
+  /**
+   * Check accessibility of current user to the course
+   * 
+   * @param courseName
+   */
   private void checkAccessibility(String courseName){
 	  String path[] = courseName.split("@ ");
 	  ref.child(path[1]).child(path[0]).child("UserList").child(username).addListenerForSingleValueEvent(new ValueEventListener(){
@@ -117,10 +136,11 @@ public class FindCourseActivity extends Activity {
 			{
 				String courseName = snap.getRef().getParent().getParent().getName() + 
 									"@ " + snap.getRef().getParent().getParent().getParent().getName();
-				createLectureAlertDialog(courseName);
+				createLectureAlertDialog(courseName,title);
 			}
 		}
 		  
 	  });
   }
+  
 }

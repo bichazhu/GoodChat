@@ -22,6 +22,7 @@ import com.zeke.goodchat.adapters.ChatListAdapter;
 public class GlobalChatActivity extends ListActivity {
   
   private String username;
+  private String title;
   private Firebase ref;
   private ChatListAdapter chatListAdapter;
   private String uniqueCourseNumber;
@@ -43,7 +44,7 @@ public class GlobalChatActivity extends ListActivity {
     	ref = new Firebase(appURL + "/GlobalChat/").push().child(getCourseName());
     	// User list, the first user is the creator
     	ref.child("UserList").child(username).setValue("creator");
-    	setupUserList();
+    	ref.child("ClassOn").setValue("none");
     }
     else
     {
@@ -77,7 +78,6 @@ public class GlobalChatActivity extends ListActivity {
 
   private void setupUserList() {
 	  // Setup the user list: an example!!!
-	  ref.child("UserList").child("user2").setValue("member");
 	  ref.child("UserList").child("user3").setValue("member");
   }
 
