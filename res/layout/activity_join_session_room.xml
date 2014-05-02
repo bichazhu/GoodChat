@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SessionRoomJoin" >
+
+    <TextView 
+        android:id="@+id/join_session_hostIP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Host IP"/>
+    
+    <EditText
+        android:id="@+id/join_session_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input today's code here"
+        />
+    
+    <Button 
+        android:id="@+id/join_session_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Join Current Class"/>
+    
+    
+</LinearLayout>

@@ -9,6 +9,9 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -30,11 +33,23 @@
             android:name="com.zeke.goodchat.GlobalChatActivity"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.FindCourseActivity" >
+        <activity android:name="com.zeke.goodchat.FindCourseActivity" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.LectureDatesActivity" >
+        <activity android:name="com.zeke.goodchat.LectureDatesActivity" >
+        </activity>
+        <activity android:name="com.zeke.goodchat.SessionMainActivity" >
+        </activity>
+        <activity android:name="com.zeke.goodchat.SessionRoomClient" >
+        </activity>
+        <activity android:name="com.zeke.goodchat.SessionRoomHost" >
+        </activity>
+        <activity android:name="com.zeke.goodchat.SessionRoomCreate" >
+        </activity>
+        <activity android:name="com.zeke.goodchat.SessionRoomJoin" >
+        </activity>
+        <activity
+            android:name="com.zeke.goodchat.AddUserActivity"
+            android:label="@string/title_activity_add_user" >
         </activity>
     </application>
 

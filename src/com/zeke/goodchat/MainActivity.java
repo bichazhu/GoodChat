@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements OnClickListener {
       case R.id.button_find_course:
       default:
         Intent startFindCourseActivity = new Intent(MainActivity.this, FindCourseActivity.class);
+        startFindCourseActivity.putExtra("username", username);
         startActivity(startFindCourseActivity);
         break;
     }
@@ -155,9 +156,11 @@ public class MainActivity extends Activity implements OnClickListener {
                 String course_name = edittext_new_course_name.getText().toString();
                 
                 if(!course_name.isEmpty()) {
-                  Intent startLoginActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
-                  startLoginActivity.putExtra("course_name", course_name);
-                  startActivity(startLoginActivity);
+                  Intent startGlobalChatActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
+                  startGlobalChatActivity.putExtra("course_name", course_name);
+                  // <Modified by Xiang> Add a boolean to indicate the status is "create"
+                  startGlobalChatActivity.putExtra("create", true);
+                  startActivity(startGlobalChatActivity);
                 } else {
                   showShortToast("Please enter a course name");
                 }
