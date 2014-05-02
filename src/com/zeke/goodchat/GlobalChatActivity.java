@@ -1,31 +1,64 @@
 package com.zeke.goodchat;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.zeke.goodchat.adapters.ChatListAdapter;
+import com.zeke.goodchat.adapters.UserListAdapter;
 
+/**
+ * This class will create a Global chat for all to be able to communicate.
+ * @author Bin
+ *
+ */
 public class GlobalChatActivity extends ListActivity {
   
-  private String username;
-  private Firebase ref;
-  private ChatListAdapter chatListAdapter;
+  // Current User
+  private String currentUser;
   
+  // User title: creator or member
+  private String userTitle;
+  
+  // Firebase
+  private Firebase ref_to_course;
+  private Firebase ref_to_specific_date;
+  private ChatListAdapter chatListAdapter;
+    
+  // App URL
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
+  
+  // Course Name and Unique ID 
+  private String courseName;
+  private String courseID;
+  
+  // Array that stores all user names
+  private ArrayList<String> users = new ArrayList<String>();
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +68,44 @@ public class GlobalChatActivity extends ListActivity {
     // Set the username with the login credentials
     setupUsername();
         
-    // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL + "/GlobalChat/" + getCourseName() + "/" + getDate());
+    userTitle = getIntent().getStringExtra("title");
+    courseID = getIntent().getStringExtra("course_id");
+    courseName = getIntent().getStringExtra("course_name");
+
+    // If courseUniqueId == "", we need to put a new entry in the database
+    if(courseID.equals("")) {
+    	
+    	// Make and get a new reference to the newly created course
+    	ref_to_course = new Firebase(appURL + "/GlobalChat/").push().child(courseName);
+    	courseID = ref_to_course.getParent().getName();
+    	
+    	// In UserList, set the current user as creator
+    	ref_to_course.child("UserList").child(currentUser).setValue("creator");
+    	userTitle = "creator";
+    	
+    	// "ClassOn" is where we put host IP address. For now we put a default of 'none'.
+    	ref_to_course.child("ClassOn").setValue("none");
+    	
+    } else {
+    	
+    	// We get reference to this already-created-course
+    	ref_to_course = new Firebase(appURL + "/GlobalChat/").child(courseID).child(courseName);
+
+    }
     
+    // sets the title
+    if(userTitle.equals("creator")) {
+        setTitle(currentUser + " (creator - " + courseName + ")");
+	} else {
+		setTitle(currentUser + " (member - " + courseName + ")");
+	}
+    
+    // Get the User list ready
+    getUserList();
+    
+    // reference to the specific class date
+    ref_to_specific_date = ref_to_course.child(getDate());
+        
     // Setup our input methods. Enter key on the keyboard or pushing the send button
     EditText inputText = (EditText)findViewById(R.id.messageInput);
     inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -56,16 +124,16 @@ public class GlobalChatActivity extends ListActivity {
             sendMessage();
         }
     });
-
+    
   }
 
-  @Override
+@Override
   public void onStart() {
       super.onStart();
       // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
       final ListView listView = getListView();
       // Tell our list adapter that we only want 50 messages at a time
-      chatListAdapter = new ChatListAdapter(ref.limit(50), this, R.layout.chat_message, username);
+      chatListAdapter = new ChatListAdapter(ref_to_specific_date.limit(50), this, R.layout.chat_message, currentUser);
       listView.setAdapter(chatListAdapter);
       chatListAdapter.registerDataSetObserver(new DataSetObserver() {
           @Override
@@ -82,6 +150,99 @@ public class GlobalChatActivity extends ListActivity {
       chatListAdapter.cleanup();
   }
   
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.globalchat, menu);
+    return true;
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle presses on the action bar items
+    switch (item.getItemId()) {
+    
+      case R.id.class_room:
+    	  
+    	String userlist = getUserListString();
+		if (userlist != null) {
+    		
+	    	Intent startLocalSessionActivity = new Intent(GlobalChatActivity.this, SessionMainActivity.class);
+	    	startLocalSessionActivity.putExtra("course_name", courseName);
+	    	startLocalSessionActivity.putExtra("course_id", courseID);
+	      	startLocalSessionActivity.putExtra("user_name", currentUser);
+	      	startLocalSessionActivity.putExtra("title", userTitle);
+	      	startLocalSessionActivity.putExtra("name_list", userlist);
+	        startActivity(startLocalSessionActivity);
+    	}
+        return true;
+        
+      case R.id.find_previous:
+    	Intent startLectureDatesActivity = new Intent(GlobalChatActivity.this, LectureDatesActivity.class);
+    	startLectureDatesActivity.putExtra("course_name", courseName);
+    	startLectureDatesActivity.putExtra("course_id", courseID);
+        startLectureDatesActivity.putExtra("user_name", currentUser);
+        startActivity(startLectureDatesActivity);
+        return true;
+        
+      case R.id.add_user:
+    	showAddUserDialog();
+	    return true;
+	    
+      default:
+        return super.onOptionsItemSelected(item);
+        
+    }
+  }
+  
+  	/**
+  	 * This method will add the new user if we are the creator of this course.
+  	 */
+	private void showAddUserDialog() {
+		
+		// Only creator can add new users
+    	if(!userTitle.equals("creator")) {
+    		Toast.makeText(this, "You did not create this course.\nCan not add user!", Toast.LENGTH_LONG).show();
+    		return;
+    	}
+    	
+		// get the view ready
+		LayoutInflater factory = LayoutInflater.from(this);
+		View view = factory.inflate(R.layout.activity_user_list, null);
+		
+		// set the adapter in the listview
+		final UserListAdapter adapter = new UserListAdapter(this, ref_to_course);
+		ListView lv = (ListView) view.findViewById(R.id.listview_users);
+		lv.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+		
+		final EditText et_user = (EditText) view.findViewById(R.id.edittext_add_user);
+	
+		Button add_user = (Button) view.findViewById(R.id.button_add_user);
+		add_user.setOnClickListener(new OnClickListener() {
+	
+			@Override
+			public void onClick(View v) {
+				String user = et_user.getText().toString();
+				if (user != null && !user.equals("") && !user.equals(currentUser)) {
+
+					// Setup the user list. New users are labeled as "member"
+					ref_to_course.child("UserList").child(user).setValue("member");
+					adapter.notifyDataSetChanged();	
+					
+					// reset the edittext
+					et_user.setText("");
+				}
+			}
+		});
+	
+		// Set the dialog features and show it.
+		Dialog dialog = new Dialog(this);
+		dialog.setContentView(view);
+		dialog.setTitle("Add users");
+		dialog.setCancelable(true);
+		dialog.show();
+	}
   
   /**
    ***************************************************************************
@@ -98,10 +259,8 @@ public class GlobalChatActivity extends ListActivity {
     
     // get GoodChatPreferences from SharedPreferences
     SharedPreferences prefs = getApplication().getSharedPreferences("GoodChatPreferences", 0);
-    username = prefs.getString("username", "NoUserName");
+    currentUser = prefs.getString("username", "NoUserName");
     
-    // sets the title in the actionbar to be the username
-    setTitle(username);
   }
 
   /**
@@ -110,23 +269,21 @@ public class GlobalChatActivity extends ListActivity {
   private void sendMessage() {
     EditText inputText = (EditText) findViewById(R.id.messageInput);
     String input = inputText.getText().toString();
+    
     if (!input.equals("")) {
+    	
       // Create our Data object to send
-      Data chat = new Data(input, username);
-      ref.push().setValue(chat);
+      Data chat = new Data(input, currentUser);
+      ref_to_specific_date.push().setValue(chat);
+      
+      // reset the inputText and dereference the Data object
       inputText.setText("");
+      chat = null;
     }
-  }
-  
-  /**
-   * @return the course name from the intent.
-   */
-  private String getCourseName() {
-    return getIntent().getExtras().get("course_name").toString();
   }
 
   /**
-   * Gets the lecture date in format yyyy,MM,dd,HH:mm
+   * Gets the lecture date in format yyyy,MM,dd
    * @return Lecture's date
    */
   @SuppressLint("SimpleDateFormat")
@@ -137,27 +294,93 @@ public class GlobalChatActivity extends ListActivity {
      */
     if(getIntent().getExtras().get("lecture_date") == null) {
       Date date = new Date();
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy,MM,dd,HH:mm");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy,MM,dd");
       return sdf.format(date);
+      
     } else {
-      // here we get the date in this format 'Lecture from: yyyy-MM-dd at HH:mm'
+    	
+      // here we get the date in this format 'Lecture from: yyyy-MM-dd'
       String lecture_date = getIntent().getExtras().get("lecture_date").toString();
       
       // since we know the date has an predetermined length, we can do this.
       String year = lecture_date.substring(14, 18);
       String month = lecture_date.substring(19, 21);
       String day = lecture_date.substring(22, 24);
-      String hourAndMinutes = lecture_date.substring(28, 33);
       
       StringBuffer sb = new StringBuffer();
       sb.append(year + ",");
       sb.append(month + ",");
-      sb.append(day + ",");
-      sb.append(hourAndMinutes);
+      sb.append(day);
       
       Log.v("getDate()", sb.toString());
       
       return sb.toString();
     }
   }
+  
+  // Get user list from database
+  private void getUserList()
+  {
+	  users.clear();
+	  Firebase baseref = new Firebase(appURL + "/GlobalChat/").child(courseID).child(courseName);
+	  Firebase ref = baseref.child("UserList");
+	  ref.addChildEventListener(new ChildEventListener() {
+		@Override
+		public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+			String username = snapshot.getName();
+
+			if (!username.equals("")) {
+				users.add(username);
+			}
+		}
+
+		@Override
+		public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+			String username = snapshot.getName();
+
+			if (!username.equals("")) {
+				users.add(username);
+			}
+		}
+
+		@Override
+		public void onChildRemoved(DataSnapshot snapshot) {
+			String username = snapshot.getName();
+
+			if (!username.equals("")) {
+				users.remove(username);
+			}
+		}
+
+		@Override
+		public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+			// We do not need to implement this part.
+		}
+
+		@Override
+		public void onCancelled(FirebaseError arg0) {
+			// We do not need to implement this part.
+		}
+	  });
+  }
+  
+	/**
+	 * Get a name list, format like: "user1, user2, user3, ..."
+	 * This string will be passed to local session and be used to take attendance. 
+	 * @return
+	 */
+	private String getUserListString() {
+		if (users.size() == 0) {
+			getUserList();
+			return null;
+		}
+
+		String str = users.get(0);
+		for (int i = 1; i < users.size(); i++) {
+			str += ", " + users.get(i);
+		}
+
+		return str;
+	}
+  
 }

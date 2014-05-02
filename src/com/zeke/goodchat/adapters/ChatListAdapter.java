@@ -4,21 +4,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
+
 import com.firebase.client.Query;
 import com.zeke.goodchat.Data;
 import com.zeke.goodchat.R;
-import com.zeke.goodchat.R.id;
 
-/**
- * User: greg
- * Date: 6/21/13
- * Time: 2:39 PM
- */
-
-/**
- * This class is an example of how to use FirebaseListAdapter. It uses the <code>Chat</code> class to encapsulate the
- * data for each individual chat message
- */
 public class ChatListAdapter extends FirebaseListAdapter<Data> {
 
     // The username for this client. We use this to indicate which messages originated from this user

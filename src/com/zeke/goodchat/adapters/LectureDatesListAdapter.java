@@ -30,35 +30,43 @@ public class LectureDatesListAdapter extends BaseAdapter {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             String courseDate = snapshot.getName();
-            courseDate = formatCourseDate(courseDate);
-            
-            if(!courseDate.equals("")) {
-              courseDates.add(courseDate);
+            if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
+            {
+	            courseDate = formatCourseDate(courseDate);
+	            
+	            if(!courseDate.equals("")) {
+	              courseDates.add(courseDate);
+	            }
+	            notifyDataSetChanged();
             }
-            
-            notifyDataSetChanged();
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
           String courseDate = snapshot.getName();
-          courseDate = formatCourseDate(courseDate);
-          
-          if(!courseDate.equals("")) {
-            courseDates.set(courseDates.indexOf(courseDate), courseDate);
+          if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
+          {
+        	  courseDate = formatCourseDate(courseDate);
+	          
+	          if(!courseDate.equals("")) {
+	            courseDates.set(courseDates.indexOf(courseDate), courseDate);
+	          }
+	          
+	          notifyDataSetChanged();
           }
-          
-          notifyDataSetChanged();
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
           String courseDate = snapshot.getName();
-          courseDate = formatCourseDate(courseDate);
-          if(!courseDate.equals("")) {
-            courseDates.remove(courseDates.indexOf(courseDate));
+          if(!courseDate.equals("UserList") && !courseDate.equals("ClassOn"))
+          {
+        	  courseDate = formatCourseDate(courseDate);
+	          if(!courseDate.equals("")) {
+	            courseDates.remove(courseDates.indexOf(courseDate));
+	          }
+	          notifyDataSetChanged();
           }
-          notifyDataSetChanged();
         }
 
         @Override
@@ -104,6 +112,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
      * 
      * @param courseDate has the format of yyy,MM,dd,HH:mm
      * @return this format: Lecture from: yyyy-MM-dd at HH:mm
+     * // <Modified by Xiang> Each day has one chat: format: yyyy-MM-dd
      */
     private String formatCourseDate(String courseDate) {
       
@@ -121,8 +130,9 @@ public class LectureDatesListAdapter extends BaseAdapter {
       sb.append("Lecture from: ");
       sb.append(splittedDate[0] + "-");
       sb.append(splittedDate[1] + "-");
-      sb.append(splittedDate[2] + " at ");
-      sb.append(splittedDate[3]);
+      sb.append(splittedDate[2]);
+      //sb.append(splittedDate[2] + " at ");
+      //sb.append(splittedDate[3]);
       
       return sb.toString();
     }

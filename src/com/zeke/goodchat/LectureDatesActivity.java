@@ -15,7 +15,9 @@ import com.zeke.goodchat.adapters.LectureDatesListAdapter;
 public class LectureDatesActivity extends Activity {
 
   private Firebase ref;
-  ListView listview;
+  private ListView listview;
+  private String courseName;
+  private String courseID;
 
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
   
@@ -24,10 +26,14 @@ public class LectureDatesActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.course_list);
     
-    setTitle(getCourseName());
+    courseID = getIntent().getStringExtra("course_id");
+    courseName = getIntent().getStringExtra("course_name");
+    
+    setTitle(courseName);
     
     // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL + "/GlobalChat/" + getCourseName());
+    ref = new Firebase(appURL + "/GlobalChat/");
+    ref = ref.child(courseID).child(courseName);
 
     LectureDatesListAdapter adapter = new LectureDatesListAdapter(this, ref);
     listview =  (ListView) findViewById(R.id.listview_courses);
@@ -40,17 +46,14 @@ public class LectureDatesActivity extends Activity {
         TextView lecture_date = (TextView) v.findViewById(R.id.textview_course_name);
         
         Intent startGlobalChatActivity = new Intent(LectureDatesActivity.this, GlobalChatActivity.class);
-        startGlobalChatActivity.putExtra("course_name", getCourseName());
+        startGlobalChatActivity.putExtra("course_id", courseID);
+        startGlobalChatActivity.putExtra("course_name", courseName);
         startGlobalChatActivity.putExtra("lecture_date", lecture_date.getText().toString());
+        startGlobalChatActivity.putExtra("create", false);
         startActivity(startGlobalChatActivity);
       }
     });
+    
   }
   
-  /**
-   * @return the course name from the intent.
-   */
-  private String getCourseName() {
-    return getIntent().getExtras().get("course_name").toString();
-  }
 }

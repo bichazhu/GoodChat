@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements OnClickListener {
   private SimpleLogin authClient;
   
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
+  public static final String ID_SEPARATOR = " ID: ";
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +43,6 @@ public class MainActivity extends Activity implements OnClickListener {
     // First we get a reference to the location of the user's name data:
     ref = new Firebase(appURL);
     authClient = new SimpleLogin(ref, this);
-    
-//    authClient.checkAuthStatus(new SimpleLoginAuthenticatedHandler() {
-//      @Override
-//      public void authenticated(com.firebase.simplelogin.enums.Error error, User user) {
-//        if (error != null) {
-//          // Oh no! There was an error performing the check
-//          showShortToast("Oh no! There was an error performing the check");
-//        } else if (user == null) {
-//          // No user is logged in
-//          showShortToast("No user is logged in");
-//        } else {
-//          // There is a logged in user
-//          showShortToast("There is a logged in user");
-//        }
-//      }
-//    });
 
     // find the buttons and set them.
     Button createCourse = (Button) findViewById(R.id.button_create_course);
@@ -76,6 +61,7 @@ public class MainActivity extends Activity implements OnClickListener {
       case R.id.button_find_course:
       default:
         Intent startFindCourseActivity = new Intent(MainActivity.this, FindCourseActivity.class);
+        startFindCourseActivity.putExtra("username", username);
         startActivity(startFindCourseActivity);
         break;
     }
@@ -139,10 +125,10 @@ public class MainActivity extends Activity implements OnClickListener {
    * Creates an Alert Dialog for user to input the course name and proceed.
    */
   private void createNewCourseAlertDialog() {
-    LayoutInflater factory = LayoutInflater.from(MainActivity.this);
+    LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 
     // get the layout view and edit text for the course name
-    final View textEntryView = factory.inflate(R.layout.create_new_course, null);
+    final View textEntryView = inflater.inflate(R.layout.create_new_course, null);
     final EditText edittext_new_course_name = (EditText) textEntryView.findViewById(R.id.edittext_new_course_name);
     
     // get the alert dialog ready for user
@@ -155,9 +141,10 @@ public class MainActivity extends Activity implements OnClickListener {
                 String course_name = edittext_new_course_name.getText().toString();
                 
                 if(!course_name.isEmpty()) {
-                  Intent startLoginActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
-                  startLoginActivity.putExtra("course_name", course_name);
-                  startActivity(startLoginActivity);
+                  Intent startGlobalChatActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
+                  startGlobalChatActivity.putExtra("course_id", ""); // empty string (course_id == "") is for us to know we have to create a course
+                  startGlobalChatActivity.putExtra("course_name", course_name);
+                  startActivity(startGlobalChatActivity);
                 } else {
                   showShortToast("Please enter a course name");
                 }
