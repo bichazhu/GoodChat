@@ -10,8 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class SessionMainActivity extends Activity {
-
-
+	
   private Button createBtn;
   private Button joinBtn;
   private String title;
@@ -25,18 +24,20 @@ public class SessionMainActivity extends Activity {
     
     title = getIntent().getExtras().getString("title");
     courseName = getIntent().getExtras().getString("course_name");
-    userName = getIntent().getExtras().getString("username");
+    userName = getIntent().getExtras().getString("user_name");
 
     createBtn = (Button)findViewById(R.id.create_btn);
     createBtn.setOnClickListener(new OnClickListener(){
 
       @Override
       public void onClick(View view) {
+    	// Only creator can hold a class
     	if(title.equals("creator"))
     	{
 	        Intent intent = new Intent(SessionMainActivity.this,SessionRoomCreate.class);
 	        intent.putExtra("course_name", courseName);
 	        intent.putExtra("user_name", userName);
+	        intent.putExtra("name_list", getIntent().getExtras().getString("name_list"));
 	        startActivity(intent);
     	}
     	else

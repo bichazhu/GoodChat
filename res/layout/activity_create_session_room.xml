@@ -23,6 +23,13 @@
         android:layout_height="wrap_content"
         android:hint="Your Name"/>
     
+    <EditText
+        android:id="@+id/create_session_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input today's code here"
+        />
+    
     <Button 
         android:id="@+id/create_view_btn"
         android:layout_width="match_parent"

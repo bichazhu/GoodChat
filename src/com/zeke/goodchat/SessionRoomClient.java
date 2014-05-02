@@ -5,8 +5,11 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -28,11 +31,15 @@ public class SessionRoomClient extends Activity {
   private String textViewContent;
   private EditText et;
   private Button sendBtn;
+  
+  private Handler mHandler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_session_room_client);
+    
+    mHandler = new Handler();
 
     sessionRoomIP = getIntent().getStringExtra("SessionRoomIP");
     sessionRoomName = getIntent().getStringExtra("SessionRoomName");
@@ -128,6 +135,24 @@ public class SessionRoomClient extends Activity {
             });
 
           }
+          // poll request
+          if(str[1].equals("POLL"))
+          {
+            textViewContent = tv.getText()+"Received a poll request!\n";
+            tv.post(new Runnable(){
+              @Override
+              public void run() {
+                tv.setText(textViewContent);
+              }
+            });
+            mHandler.post(new Runnable(){
+				@Override
+				public void run() {
+					createPollDialog();
+				}
+            });
+            
+          }
         }
         receiveSocket.close();
       } catch (IOException e) {
@@ -157,6 +182,46 @@ public class SessionRoomClient extends Activity {
   }
 
 
+  /**
+   * Creates an Alert Dialog for poll function
+   */
+  private void createPollDialog() {
+    // get the alert dialog ready for user
+    final AlertDialog.Builder alert = new AlertDialog.Builder(SessionRoomClient.this);
+    alert.setMessage("Make Your Choice")
+    .setPositiveButton("C", 
+    		new DialogInterface.OnClickListener() {
+    	public void onClick(DialogInterface dialog, int which) {
+    		textViewContent = tv.getText()+"You chosed C!\n";
+    		tv.setText(textViewContent);
+    		// Send selection to server
+    		String msg = "POLL, C";
+            new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+    	}
+    })
+    .setNeutralButton("B", 
+    		new DialogInterface.OnClickListener() {
+    	public void onClick(DialogInterface dialog, int which) {
+    		textViewContent = tv.getText()+"You chosed B!\n";
+    		tv.setText(textViewContent);
+    		// Send selection to server
+    		String msg = "POLL, B";
+            new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+    	}
+    })
+    .setNegativeButton("A",
+    		new DialogInterface.OnClickListener() {
+    	public void onClick( DialogInterface dialog, int whichButton) {
+    		textViewContent = tv.getText()+"You chosed A!\n";
+    		tv.setText(textViewContent);
+    		// Send selection to server
+    		String msg = "POLL, A";
+            new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+    	}
+    });
+
+    alert.show();
+  }
 
 
 }

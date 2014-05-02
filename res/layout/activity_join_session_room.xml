@@ -11,6 +11,13 @@
         android:layout_height="wrap_content"
         android:hint="Host IP"/>
     
+    <EditText
+        android:id="@+id/join_session_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input today's code here"
+        />
+    
     <Button 
         android:id="@+id/join_session_button"
         android:layout_width="match_parent"

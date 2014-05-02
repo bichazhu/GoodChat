@@ -158,6 +158,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 if(!course_name.isEmpty()) {
                   Intent startGlobalChatActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
                   startGlobalChatActivity.putExtra("course_name", course_name);
+                  // <Modified by Xiang> Add a boolean to indicate the status is "create"
                   startGlobalChatActivity.putExtra("create", true);
                   startActivity(startGlobalChatActivity);
                 } else {

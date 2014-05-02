@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -33,28 +33,24 @@
             android:name="com.zeke.goodchat.GlobalChatActivity"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.FindCourseActivity" >
+        <activity android:name="com.zeke.goodchat.FindCourseActivity" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.LectureDatesActivity" >
+        <activity android:name="com.zeke.goodchat.LectureDatesActivity" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.SessionMainActivity" >
+        <activity android:name="com.zeke.goodchat.SessionMainActivity" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.SessionRoomClient" >
+        <activity android:name="com.zeke.goodchat.SessionRoomClient" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.SessionRoomHost" >
+        <activity android:name="com.zeke.goodchat.SessionRoomHost" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.SessionRoomCreate" >
+        <activity android:name="com.zeke.goodchat.SessionRoomCreate" >
         </activity>
-        <activity 
-            android:name="com.zeke.goodchat.SessionRoomJoin" >
+        <activity android:name="com.zeke.goodchat.SessionRoomJoin" >
         </activity>
-        
+        <activity
+            android:name="com.zeke.goodchat.AddUserActivity"
+            android:label="@string/title_activity_add_user" >
+        </activity>
     </application>
 
 </manifest>

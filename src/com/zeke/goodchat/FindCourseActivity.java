@@ -1,10 +1,6 @@
 package com.zeke.goodchat;
 
-import java.util.Iterator;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -62,30 +58,31 @@ public class FindCourseActivity extends Activity {
   /**
    * Creates an Alert Dialog for user to create/find lecture and proceed.
    */
+  // <Modified by Xiang> Abandon using a dialog. Open the GlobalChatActivity directly
+  // Create, FindPrevious, and ClassRoom functionalities can be accessed under the menu of GlobalChatActivity
+  /*
   private void createLectureAlertDialog(final String course_name, final String title) {
     
     // get the alert dialog ready for user
     final AlertDialog.Builder alert = new AlertDialog.Builder( FindCourseActivity.this);
     alert.setMessage("Create or Find Lecture?")
     	//
-    	/*
         .setPositiveButton("Create",
             new DialogInterface.OnClickListener() {
               public void onClick( final DialogInterface dialog, int whichButton) {
                   Intent GlobalChatActivity = new Intent(FindCourseActivity.this, GlobalChatActivity.class);
                   GlobalChatActivity.putExtra("course_name", course_name);
-                  GlobalChatActivity.putExtra("username", username);
+                  GlobalChatActivity.putExtra("user_name", username);
                   GlobalChatActivity.putExtra("create", false);
                   startActivity(GlobalChatActivity);
               }
             })
-        */
     	.setPositiveButton("ClassRoom", 
             new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int which) {
             	Intent startLocalSessionActivity = new Intent(FindCourseActivity.this, SessionMainActivity.class);
             	startLocalSessionActivity.putExtra("course_name", course_name);
-            	startLocalSessionActivity.putExtra("username", username);
+            	startLocalSessionActivity.putExtra("user_name", username);
             	startLocalSessionActivity.putExtra("title",title);
                 startActivity(startLocalSessionActivity);
               }
@@ -95,7 +92,7 @@ public class FindCourseActivity extends Activity {
               public void onClick(DialogInterface dialog, int which) {
                 Intent startLectureDatesActivity = new Intent(FindCourseActivity.this, LectureDatesActivity.class);
                 startLectureDatesActivity.putExtra("course_name", course_name);
-                startLectureDatesActivity.putExtra("username", username);
+                startLectureDatesActivity.putExtra("user_name", username);
                 startActivity(startLectureDatesActivity);
               }
             })
@@ -109,13 +106,28 @@ public class FindCourseActivity extends Activity {
     alert.show();
   }
   
+  */
+  /**
+   * Open GlobalChatActivity
+   * @param coursename
+   * @param title
+   */
+  private void openGlobalChat(final String coursename, final String title){
+	  Intent GlobalChatActivity = new Intent(FindCourseActivity.this, GlobalChatActivity.class);
+      GlobalChatActivity.putExtra("course_name", coursename);
+      GlobalChatActivity.putExtra("user_name", username);
+      GlobalChatActivity.putExtra("create", false);
+      GlobalChatActivity.putExtra("title",title);
+      startActivity(GlobalChatActivity);
+  }
+  
   private void createToast(String msg){
 	  Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
   
   /**
    * Check accessibility of current user to the course
-   * 
+   * Only users in the UserList can access a certain course
    * @param courseName
    */
   private void checkAccessibility(String courseName){
@@ -136,7 +148,7 @@ public class FindCourseActivity extends Activity {
 			{
 				String courseName = snap.getRef().getParent().getParent().getName() + 
 									"@ " + snap.getRef().getParent().getParent().getParent().getName();
-				createLectureAlertDialog(courseName,title);
+				openGlobalChat(courseName,title);
 			}
 		}
 		  

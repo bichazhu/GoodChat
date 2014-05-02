@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SessionRoomJoin extends Activity {
 
@@ -44,6 +45,7 @@ public class SessionRoomJoin extends Activity {
 
   private TextView tv;
   private Button btn;
+  private EditText et;
   
   private SenseThread st;
 
@@ -72,6 +74,8 @@ public class SessionRoomJoin extends Activity {
 		  
 	  });
     
+    et = (EditText)findViewById(R.id.join_session_code);
+    
     btn = (Button)findViewById(R.id.join_session_button);
     btn.setOnClickListener(new OnClickListener(){
 
@@ -80,12 +84,13 @@ public class SessionRoomJoin extends Activity {
     	if(!hostIP.equals("none"))
     	{
 	        // Send a hello msg to server
-	        String helloMsg = "HELLO, "+userName;
+	        String helloMsg = "HELLO, "+userName+", "+et.getText().toString();
 	        new SendThread(helloMsg,SessionRoomUtil.SEND_PORT,hostIP,SessionRoomUtil.RECEIVE_PORT).start();
     	}
       }
 
     });
+    
 
   }
 
@@ -126,6 +131,10 @@ public class SessionRoomJoin extends Activity {
             intent.putExtra("SessionRoomIP", str[0]);
             intent.putExtra("UserName", userName);
             startActivity(intent);
+          }
+          if(str[1].equals("DECLINE"))
+          {
+            createToast("Wrong code. Request is declined!");
           }
         }
         receiveSocket.close();
@@ -170,6 +179,9 @@ public class SessionRoomJoin extends Activity {
     }
   };
 
+  private void createToast(String msg){
+	  Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
 
   // Do the endian conversion
   int little2big(int i) {

@@ -27,6 +27,7 @@ public class SessionRoomCreate extends Activity {
   private TextView courseNameTv;
   private TextView userNameTv;
   private Button btn;
+  private EditText et;
 
   private String myIP;
   private String courseName;
@@ -61,11 +62,15 @@ public class SessionRoomCreate extends Activity {
     userNameTv = (TextView)findViewById(R.id.create_view_nick_textview);
     userNameTv.setText(userName);
     
+    et = (EditText)findViewById(R.id.create_session_code);
+    
     btn = (Button)findViewById(R.id.create_view_btn);
     btn.setOnClickListener(new OnClickListener(){
 
       @Override
       public void onClick(View view) {
+    	// Once a class is held, the "ClassOn" entry is updated by the host ip
+    	// Other users can join the local network with this ip
     	String path[] = courseName.split("@ ");
     	ref.child(path[1]).child(path[0]).child("ClassOn").setValue(myIP);
         
@@ -73,6 +78,8 @@ public class SessionRoomCreate extends Activity {
         intent.putExtra("SessionRoomName", courseName);
         intent.putExtra("UserName", userName);
         intent.putExtra("MyIPAddress", myIP);
+        intent.putExtra("name_list", getIntent().getExtras().getString("name_list"));
+        intent.putExtra("code", et.getText().toString());
         startActivity(intent);
       }
 

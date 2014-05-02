@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/class_room"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/ClassRoom"/>
+    <item
+        android:id="@+id/find_previous"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/FindPrevious"/>
+    
+    <item
+        android:id="@+id/add_user"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/AddNewUser"/>
+
+</menu>

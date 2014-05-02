@@ -112,6 +112,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
      * 
      * @param courseDate has the format of yyy,MM,dd,HH:mm
      * @return this format: Lecture from: yyyy-MM-dd at HH:mm
+     * // <Modified by Xiang> Each day has one chat: format: yyyy-MM-dd
      */
     private String formatCourseDate(String courseDate) {
       
@@ -129,8 +130,9 @@ public class LectureDatesListAdapter extends BaseAdapter {
       sb.append("Lecture from: ");
       sb.append(splittedDate[0] + "-");
       sb.append(splittedDate[1] + "-");
-      sb.append(splittedDate[2] + " at ");
-      sb.append(splittedDate[3]);
+      sb.append(splittedDate[2]);
+      //sb.append(splittedDate[2] + " at ");
+      //sb.append(splittedDate[3]);
       
       return sb.toString();
     }
