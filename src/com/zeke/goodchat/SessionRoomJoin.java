@@ -7,6 +7,8 @@ import java.net.SocketException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +37,7 @@ public class SessionRoomJoin extends Activity {
   private EditText et;
   
   private SenseThread st;
+ 
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -167,8 +170,14 @@ public class SessionRoomJoin extends Activity {
     }
   };
 
-  private void createToast(String msg){
-	  Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  public void createToast(final String toast)
+  {
+      runOnUiThread(new Runnable() {
+          public void run()
+          {
+              Toast.makeText(SessionRoomJoin.this, toast, Toast.LENGTH_SHORT).show();
+          }
+      });
   }
 
   // Do the endian conversion

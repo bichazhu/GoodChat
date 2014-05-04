@@ -1,15 +1,20 @@
 package com.zeke.goodchat;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.net.SocketException;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +37,8 @@ public class SessionRoomClient extends Activity {
   private Button sendBtn;
   
   private Handler mHandler;
+  
+  private String filePath;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,8 @@ public class SessionRoomClient extends Activity {
     myName = getIntent().getStringExtra("UserName");
 
     tv = (TextView)findViewById(R.id.session_client_textview);
+    tv.setMovementMethod(new ScrollingMovementMethod()); // make the textview scrollable
+    
     tv.setText("************************\n"+"Welcome to "+sessionRoomName+"!\n"+"************************\n");
     et = (EditText)findViewById(R.id.session_client_edittext);
     sendBtn = (Button)findViewById(R.id.session_client_sendbtn);
@@ -152,6 +161,29 @@ public class SessionRoomClient extends Activity {
             });
             
           }
+          
+          if(str[1].equals("FILE"))
+          {
+        	  File folder = new File(Environment.getExternalStorageDirectory().getPath()+"/GoodChat");
+        	  if(!folder.exists())
+        		  folder.mkdir();
+        	  String[]parse = str[2].split("/");
+        	  filePath = Environment.getExternalStorageDirectory().getPath()+"/GoodChat/"+parse[parse.length-1];
+        	  textViewContent = tv.getText()+"Received a File request!\n"+filePath+"\n";
+              tv.post(new Runnable(){
+                @Override
+                public void run() {
+                  tv.setText(textViewContent);
+                }
+              });
+              mHandler.post(new Runnable(){
+  				@Override
+  				public void run() {
+  					createFileDialog();
+  				}
+              });
+          }
+          
         }
         receiveSocket.close();
       } catch (IOException e) {
@@ -166,6 +198,40 @@ public class SessionRoomClient extends Activity {
         receiveSocket.close();
       super.interrupt();
     }
+  };
+  
+  private class ReceiveFileThread extends Thread{
+	  private final int sendPort;
+	  private final String destIP;
+	  private final int receivePort;
+	  private final String filePath;
+
+	  public ReceiveFileThread(String path, int sendP, String dest, int receiveP){
+		  sendPort = sendP;
+		  destIP = dest;
+		  receivePort = receiveP;
+		  filePath = path;
+	  }
+	  @Override
+	  public void run() {
+		  try {
+			  ServerSocket socket = new ServerSocket(receivePort);
+			  SessionRoomUtil.receiveFile(socket, filePath);
+			  socket.close();
+			  textViewContent = tv.getText()+"File: "+filePath+" is saved in /GoodChat\n";
+			  tv.post(new Runnable(){
+				  @Override
+				  public void run() {
+					  tv.setText(textViewContent);
+				  }
+			  });
+
+			  String msg = "FILE, COMPLETE, "+myName;
+			  new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+		  } catch (IOException e) {
+			  Log.d("DEBUG", "HOSTSEND: IOException");
+		  }
+	  }
   };
 
   @Override
@@ -222,5 +288,32 @@ public class SessionRoomClient extends Activity {
     alert.show();
   }
 
+  /**
+   * Creates an Alert Dialog for file transfer
+   */
+  private void createFileDialog() {
+    // get the alert dialog ready for user
+    final AlertDialog.Builder alert = new AlertDialog.Builder(SessionRoomClient.this);
+    alert.setMessage("Would you like to receive the file?")
+    .setPositiveButton("YES", 
+    		new DialogInterface.OnClickListener() {
+    	public void onClick(DialogInterface dialog, int which) {
+    		// Send selection to server
+    		String msg = "FILE, YES, "+myName;
+    		new ReceiveFileThread(filePath,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+            new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+    	}
+    })
+    .setNegativeButton("NO",
+    		new DialogInterface.OnClickListener() {
+    	public void onClick( DialogInterface dialog, int whichButton) {
+    		// Send selection to server
+    		String msg = "FILE, NO, "+myName;
+            new SendThread(msg,SessionRoomUtil.SEND_PORT,sessionRoomIP,SessionRoomUtil.RECEIVE_PORT).start();
+    	}
+    });
+
+    alert.show();
+  }
 
 }

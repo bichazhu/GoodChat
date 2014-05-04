@@ -1,22 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".SessionRoomClient" >
-
-    <TextView
-        android:id="@+id/session_client_textview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:text="" />
     
     <LinearLayout
+        android:id="@+id/session_client_linearlayouttmp"
         android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        >
        
         <EditText
 	    android:id="@+id/session_client_edittext"
@@ -32,6 +26,13 @@
 	    android:text="Send" />
         
     </LinearLayout>
-        
+    
+    <TextView
+        android:id="@+id/session_client_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/session_client_linearlayouttmp"
+        android:layout_alignParentTop="true"
+        android:scrollbars="vertical" />
 
-</LinearLayout>
+</RelativeLayout>

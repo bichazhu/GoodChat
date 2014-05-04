@@ -2,13 +2,20 @@ package com.zeke.goodchat;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.Socket;
 import java.net.SocketException;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -24,7 +31,8 @@ import com.firebase.client.Firebase;
 
 public class SessionRoomHost extends Activity {
 
-  //private BeaconThread bt;
+  private static final int FILE_SELECT_CODE = 0;
+  
   private ReceiveThread rt;
 
   private String courseName;
@@ -48,6 +56,8 @@ public class SessionRoomHost extends Activity {
   private ArrayList<String> userList = new ArrayList<String>(); 
   // Hashtable used to take attendance
   private Hashtable<String, Boolean> userAtt = new Hashtable<String, Boolean>(); 
+  
+  private String filePath = null;
   
   private class UserInfo{
     String name;
@@ -112,6 +122,7 @@ public class SessionRoomHost extends Activity {
     code = getIntent().getStringExtra("code");
     
     users.add(new UserInfo(myName,myIP));
+    userAtt.put(myName, true);
 
     setTitle(sessionRoomName);
   }
@@ -171,6 +182,7 @@ public class SessionRoomHost extends Activity {
 	            if(!users.contains(tmp))
 	            {
 	              users.add(tmp);
+	              userAtt.put(tmp.name, true);
 	            }
             }
             else
@@ -191,22 +203,25 @@ public class SessionRoomHost extends Activity {
           if(str[1].equals("MESSAGE"))
           {
             Log.d("DEBUG", "Received a MESSAGE message");
-            textViewContent = tv.getText()+str[2]+": "+str[3]+"\n";
-            tv.post(new Runnable(){
-              @Override
-              public void run() {
-                tv.setText(textViewContent);
-              }
-            });
-
-            for(int i=1;i<users.size();i++)
+            if(str.length>3)
             {
-              UserInfo user = users.get(i);
-              String dest = user.addr;
-              if(dest.equals(myIP))
-                continue;
-              String forwardMsg = "MESSAGE, "+str[2]+", "+str[3];
-              new SendThread(forwardMsg,SessionRoomUtil.SEND_PORT,dest,SessionRoomUtil.RECEIVE_PORT).start();
+	            textViewContent = tv.getText()+str[2]+": "+str[3]+"\n";
+	            tv.post(new Runnable(){
+	              @Override
+	              public void run() {
+	                tv.setText(textViewContent);
+	              }
+	            });
+	
+	            for(int i=1;i<users.size();i++)
+	            {
+	              UserInfo user = users.get(i);
+	              String dest = user.addr;
+	              if(dest.equals(myIP))
+	                continue;
+	              String forwardMsg = "MESSAGE, "+str[2]+", "+str[3];
+	              new SendThread(forwardMsg,SessionRoomUtil.SEND_PORT,dest,SessionRoomUtil.RECEIVE_PORT).start();
+	            }
             }
 
           }
@@ -229,6 +244,44 @@ public class SessionRoomHost extends Activity {
             });
 
           }
+       // "file" msg
+          if(str[1].equals("FILE"))
+          {
+        	if(str[2].equals("YES"))
+        	{
+                textViewContent = tv.getText()+"Sending file to "+str[3]+"\n";
+                tv.post(new Runnable(){
+                  @Override
+                  public void run() {
+                    tv.setText(textViewContent);
+                  }
+                });
+                
+                new SendFileThread(filePath,SessionRoomUtil.SEND_PORT,str[0],SessionRoomUtil.RECEIVE_PORT).start();
+        	}
+        	if(str[2].equals("NO"))
+        	{
+        		textViewContent = tv.getText()+str[3]+"Rejected\n";
+                tv.post(new Runnable(){
+                  @Override
+                  public void run() {
+                    tv.setText(textViewContent);
+                  }
+                });
+        	}
+        	if(str[2].equals("COMPLETE"))
+        	{
+        		textViewContent = tv.getText()+str[3]+" Complete...\n";
+                tv.post(new Runnable(){
+                  @Override
+                  public void run() {
+                    tv.setText(textViewContent);
+                  }
+                });
+        	}
+        	
+
+          }
           // "end" msg
           if(str[1].equals("END"))
           {
@@ -243,6 +296,7 @@ public class SessionRoomHost extends Activity {
             UserInfo tmp = new UserInfo(str[2],str[0]);
             if(!users.contains(tmp))
             {
+              userAtt.put(tmp.name, false);
               users.remove(tmp);
             }
           }
@@ -277,16 +331,39 @@ public class SessionRoomHost extends Activity {
     }
     @Override
     public void run() {
-      try {
-        DatagramSocket socket = new DatagramSocket(sendPort);
-        SessionRoomUtil.sendMessage(socket, msg, destIP, receivePort);
-        socket.close();
-      } catch (IOException e) {
-        Log.d("DEBUG", "HOSTSEND: IOException");
-      }
+    	try {
+    		DatagramSocket socket = new DatagramSocket(sendPort);
+    		SessionRoomUtil.sendMessage(socket, msg, destIP, receivePort);
+    		socket.close();
+    	} catch (IOException e) {
+    		Log.d("DEBUG", "HOSTSEND: IOException");
+    	}
     }
   };
+  
+  private class SendFileThread extends Thread{
+	  private final int sendPort;
+	  private final String destIP;
+	  private final int receivePort;
+	  private final String filePath;
 
+	  public SendFileThread(String path, int sendP, String dest, int receiveP){
+		  sendPort = sendP;
+		  destIP = dest;
+		  receivePort = receiveP;
+		  filePath = path;
+	  }
+	  @Override
+	  public void run() {
+		  try {
+			  Socket socket = new Socket(destIP,receivePort);
+			  SessionRoomUtil.sendFile(socket, filePath);
+			  socket.close();
+		  } catch (IOException e) {
+			  Log.d("DEBUG", "HOSTSEND: IOException");
+		  }
+	  }
+  };
 
   @Override
   protected void onPause() {
@@ -300,6 +377,16 @@ public class SessionRoomHost extends Activity {
     }
     
 	ref.child(courseID).child(courseName).child("ClassOn").setValue("none");
+	
+	for(int i=1;i<users.size();i++)
+    {
+      UserInfo user = users.get(i);
+      String dest = user.addr;
+      if(dest.equals(myIP))
+        continue;
+      String closeMsg = "MESSAGE, "+myName+", Classroom is closed!";
+      new SendThread(closeMsg,SessionRoomUtil.SEND_PORT,dest,SessionRoomUtil.RECEIVE_PORT).start();
+    }
   }
   
   /**
@@ -344,6 +431,9 @@ public class SessionRoomHost extends Activity {
     	takeAttendance();
     	
     	return true;
+    case R.id.sendfile:
+    	showFileChooser();
+    	return true;
       default:
         return super.onOptionsItemSelected(item);
     }
@@ -362,12 +452,7 @@ public class SessionRoomHost extends Activity {
   
   // Take attendance
   void takeAttendance()
-  {
-	  for(int i=0;i<users.size();i++)
-	  {
-		  userAtt.put(users.get(i).name, true);
-	  }
-	  
+  {  
 	  String names = "";
 	  for(int i=0;i<userList.size();i++)
 	  {
@@ -382,6 +467,54 @@ public class SessionRoomHost extends Activity {
 			  tv.setText(textViewContent);
 		  }
 	  });
+  }
+
+  //Choose a file
+  private void showFileChooser() {
+	  Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
+	  intent.setType("*/*"); 
+	  intent.addCategory(Intent.CATEGORY_OPENABLE);
+	  try {
+		  startActivityForResult(Intent.createChooser(intent, "Select a file to hand out"),FILE_SELECT_CODE);
+	  } catch (android.content.ActivityNotFoundException ex) {
+
+	  }
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	  switch (requestCode) {
+	  case FILE_SELECT_CODE:
+		  if (resultCode == RESULT_OK) {
+			  // Get the Uri of the selected file 
+			  Uri uri = data.getData();
+			  // Get the path
+			  filePath = FilePathFromUri.getPath(this, uri);
+			  //filePath = Environment.getExternalStorageDirectory().getPath()+"/LocalSessionRoom.apk";
+			  textViewContent = tv.getText()+"Prepare to hand out: "+filePath+"\n";
+			  tv.setText(textViewContent);
+			  handOutFile();
+		  }
+		  break;
+	  }
+	  super.onActivityResult(requestCode, resultCode, data);
+  }
+
+  private void handOutFile(){
+	  if(filePath!=null)
+	  {
+		  if(users.size()>1)
+		  {
+			  UserInfo user = users.get(1);
+			  String dest = user.addr;
+			  String otherIP = "";
+			  for(int i=2;i<users.size();i++)
+				  otherIP = otherIP + ", " + users.get(i).addr;
+			  String forwardMsg = "FILE, "+filePath+otherIP;
+			  new SendThread(forwardMsg,SessionRoomUtil.SEND_PORT,dest,SessionRoomUtil.RECEIVE_PORT).start();
+
+		  }
+	  }
   }
 
 }
