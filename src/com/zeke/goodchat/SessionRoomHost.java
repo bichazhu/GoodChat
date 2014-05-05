@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -45,7 +46,7 @@ public class SessionRoomHost extends Activity {
   private TextView tv;
   private String textViewContent;
   private EditText et;
-  private Button sendBtn;
+  private ImageButton sendBtn;
   
   private Firebase ref;
   
@@ -89,7 +90,7 @@ public class SessionRoomHost extends Activity {
     tv.setMovementMethod(new ScrollingMovementMethod()); // make the textview scrollable
     
     et = (EditText)findViewById(R.id.session_host_edittext);
-    sendBtn = (Button)findViewById(R.id.session_host_sendbtn);
+    sendBtn = (ImageButton)findViewById(R.id.session_host_sendbtn);
     sendBtn.setOnClickListener(new OnClickListener(){
 
       @Override
@@ -166,7 +167,7 @@ public class SessionRoomHost extends Activity {
           {
             Log.d("DEBUG", "Received a HELLO message");
             // If code matches, allow user to join
-            if(str[3].equals(code))
+            if(str.length>3 && str[3].equals(code))
             {
 	            textViewContent = tv.getText()+str[2]+": Enters the room.\n";
 	            tv.post(new Runnable(){

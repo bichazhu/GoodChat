@@ -158,6 +158,25 @@ public class GlobalChatActivity extends ListActivity {
   }
   
   @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+	  
+	  // if we are not the creator, we hide some features
+	  if(!userTitle.equals("creator")) {
+		  
+		MenuItem add_user = menu.findItem(R.id.add_user);
+		MenuItem remove_course = menu.findItem(R.id.remove_course);
+		
+		if (add_user != null) {
+			add_user.setVisible(false);
+		}
+		if (remove_course != null) {
+			remove_course.setVisible(false);
+		}
+	  }
+	  return super.onPrepareOptionsMenu(menu);
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     // Handle presses on the action bar items
     switch (item.getItemId()) {
@@ -182,6 +201,7 @@ public class GlobalChatActivity extends ListActivity {
     	startLectureDatesActivity.putExtra("course_name", courseName);
     	startLectureDatesActivity.putExtra("course_id", courseID);
         startLectureDatesActivity.putExtra("user_name", currentUser);
+        startLectureDatesActivity.putExtra("title", userTitle);
         startActivity(startLectureDatesActivity);
         return true;
         
@@ -189,6 +209,14 @@ public class GlobalChatActivity extends ListActivity {
     	showAddUserDialog();
 	    return true;
 	    
+      case R.id.remove_course:
+    	  if(userTitle.equals("creator")) {
+    		  ref_to_course.removeValue();
+    		  finish();	// finish this activity and return to the caller
+    	  } else {
+    		  Toast.makeText(this, "You did not create this course.\nCan not remove this course!", Toast.LENGTH_LONG).show();
+    	  }
+    	  return true;
       default:
         return super.onOptionsItemSelected(item);
         

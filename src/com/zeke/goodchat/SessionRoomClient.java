@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SessionRoomClient extends Activity {
@@ -34,7 +35,7 @@ public class SessionRoomClient extends Activity {
   private TextView tv;
   private String textViewContent;
   private EditText et;
-  private Button sendBtn;
+  private ImageButton sendBtn;
   
   private Handler mHandler;
   
@@ -57,7 +58,7 @@ public class SessionRoomClient extends Activity {
     
     tv.setText("************************\n"+"Welcome to "+sessionRoomName+"!\n"+"************************\n");
     et = (EditText)findViewById(R.id.session_client_edittext);
-    sendBtn = (Button)findViewById(R.id.session_client_sendbtn);
+    sendBtn = (ImageButton)findViewById(R.id.session_client_sendbtn);
     sendBtn.setOnClickListener(new OnClickListener(){
 
       @Override

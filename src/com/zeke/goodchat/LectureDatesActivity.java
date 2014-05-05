@@ -18,6 +18,7 @@ public class LectureDatesActivity extends Activity {
   private ListView listview;
   private String courseName;
   private String courseID;
+  private String userTitle;
 
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
   
@@ -28,7 +29,7 @@ public class LectureDatesActivity extends Activity {
     
     courseID = getIntent().getStringExtra("course_id");
     courseName = getIntent().getStringExtra("course_name");
-    
+    userTitle = getIntent().getStringExtra("title");
     setTitle(courseName);
     
     // First we get a reference to the location of the user's name data:
@@ -50,6 +51,7 @@ public class LectureDatesActivity extends Activity {
         startGlobalChatActivity.putExtra("course_name", courseName);
         startGlobalChatActivity.putExtra("lecture_date", lecture_date.getText().toString());
         startGlobalChatActivity.putExtra("create", false);
+        startGlobalChatActivity.putExtra("title", userTitle);
         startActivity(startGlobalChatActivity);
       }
     });
