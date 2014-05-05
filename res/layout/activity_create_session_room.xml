@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My IP:" 
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#CCCCCC"/>
     
     <TextView 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:hint="Session Room Name"
         android:layout_marginTop="15dp"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#CCCCCC"/>
     
     <TextView 
@@ -28,17 +28,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Your Name"
-        android:layout_marginTop="15dp"
-        android:textSize="25sp"
+        android:layout_marginTop="20dp"
+        android:textSize="15sp"
         android:textColor="#CCCCCC"/>
-    
+
     <EditText
         android:id="@+id/create_session_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:hint="Input today's code here"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#CCCCCC"
         />
     
@@ -49,7 +49,8 @@
         android:background="@drawable/btn_create_course_bg"
         android:layout_marginTop="15dp"
         android:textColor="#FFFFFF"
-        android:textSize="25sp" 
+        android:textSize="20sp" 
         android:text="Create"/>
+
 
 </LinearLayout>

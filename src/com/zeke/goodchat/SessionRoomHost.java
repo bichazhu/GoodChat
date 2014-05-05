@@ -25,7 +25,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -46,7 +45,7 @@ public class SessionRoomHost extends Activity {
   private TextView tv;
   private String textViewContent;
   private EditText et;
-  private ImageButton sendBtn;
+  private Button sendBtn;
   
   private Firebase ref;
   
@@ -59,6 +58,8 @@ public class SessionRoomHost extends Activity {
   private Hashtable<String, Boolean> userAtt = new Hashtable<String, Boolean>(); 
   
   private String filePath = null;
+  
+  private int nextUser;
   
   private class UserInfo{
     String name;
@@ -90,7 +91,7 @@ public class SessionRoomHost extends Activity {
     tv.setMovementMethod(new ScrollingMovementMethod()); // make the textview scrollable
     
     et = (EditText)findViewById(R.id.session_host_edittext);
-    sendBtn = (ImageButton)findViewById(R.id.session_host_sendbtn);
+    sendBtn = (Button)findViewById(R.id.session_host_sendbtn);
     sendBtn.setOnClickListener(new OnClickListener(){
 
       @Override
@@ -167,7 +168,7 @@ public class SessionRoomHost extends Activity {
           {
             Log.d("DEBUG", "Received a HELLO message");
             // If code matches, allow user to join
-            if(str.length>3 && str[3].equals(code))
+            if(str[3].equals(code))
             {
 	            textViewContent = tv.getText()+str[2]+": Enters the room.\n";
 	            tv.post(new Runnable(){
@@ -279,6 +280,9 @@ public class SessionRoomHost extends Activity {
                     tv.setText(textViewContent);
                   }
                 });
+                
+                nextUser ++;
+                handOutFile();
         	}
         	
 
@@ -494,6 +498,7 @@ public class SessionRoomHost extends Activity {
 			  //filePath = Environment.getExternalStorageDirectory().getPath()+"/LocalSessionRoom.apk";
 			  textViewContent = tv.getText()+"Prepare to hand out: "+filePath+"\n";
 			  tv.setText(textViewContent);
+			  nextUser = 1;
 			  handOutFile();
 		  }
 		  break;
@@ -504,16 +509,12 @@ public class SessionRoomHost extends Activity {
   private void handOutFile(){
 	  if(filePath!=null)
 	  {
-		  if(users.size()>1)
+		  if(nextUser<users.size())
 		  {
-			  UserInfo user = users.get(1);
+			  UserInfo user = users.get(nextUser);
 			  String dest = user.addr;
-			  String otherIP = "";
-			  for(int i=2;i<users.size();i++)
-				  otherIP = otherIP + ", " + users.get(i).addr;
-			  String forwardMsg = "FILE, "+filePath+otherIP;
+			  String forwardMsg = "FILE, "+filePath;
 			  new SendThread(forwardMsg,SessionRoomUtil.SEND_PORT,dest,SessionRoomUtil.RECEIVE_PORT).start();
-
 		  }
 	  }
   }

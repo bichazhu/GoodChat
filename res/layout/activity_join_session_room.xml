@@ -8,27 +8,14 @@
 
     <Button
         android:id="@+id/join_session_button"
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="100dp"
+        android:layout_alignBottom="@+id/join_session_code"
+        android:layout_alignParentRight="true"
         android:background="@drawable/btn_create_course_bg"
-        android:text="Join Current Class"
+        android:text="Join"
         android:textColor="#FFFFFF"
-        android:textSize="25sp" />
-
-    <EditText
-        android:id="@+id/join_session_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/join_session_button"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="20dp"
-        android:ems="10"
-        android:hint="Input today&apos;s code here"
-        android:textColor="#CCCCCC"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/join_session_hostIP"
@@ -36,8 +23,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:gravity="center"
         android:hint="Host IP"
         android:textColor="#CCCCCC"
         android:textSize="25sp" />
+
+    <EditText
+        android:id="@+id/join_session_code"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/join_session_hostIP"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:hint="Input today&apos;s code here"
+        android:textColor="#CCCCCC"
+        android:textSize="20sp" />
     
 </RelativeLayout>
