@@ -1,28 +1,43 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/bg"
     tools:context=".SessionRoomJoin" >
 
-    <TextView 
-        android:id="@+id/join_session_hostIP"
+    <Button
+        android:id="@+id/join_session_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Host IP"/>
-    
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/btn_create_course_bg"
+        android:text="Join Current Class"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
     <EditText
         android:id="@+id/join_session_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Input today's code here"
-        />
-    
-    <Button 
-        android:id="@+id/join_session_button"
+        android:layout_above="@id/join_session_button"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:ems="10"
+        android:hint="Input today&apos;s code here"
+        android:textColor="#CCCCCC"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/join_session_hostIP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Join Current Class"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:hint="Host IP"
+        android:textColor="#CCCCCC"
+        android:textSize="25sp" />
     
-    
-</LinearLayout>
+</RelativeLayout>

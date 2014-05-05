@@ -3,11 +3,9 @@
 
     <string name="app_name">GoodChat</string>
     <string name="Logout">Logout</string>
-    <string name="FindPrevious">Find Previous</string>
+    <string name="FindPrevious">Previous Lectures</string>
     <string name="ClassRoom">Go to Classroom</string>
     <string name="AddNewUser">Add New User</string>
-    <string name="title_activity_add_user">AddUserActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="RemoveCourse">Remove Course</string>
 
 </resources>

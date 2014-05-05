@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="course_item_pressed_bg">#E0EEEE</color>
+    <color name="course_item_normal_bg">#CCCCCC</color>
+</resources>

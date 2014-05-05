@@ -16,5 +16,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/AddNewUser"/>
-
+    <item
+        android:id="@+id/remove_course"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/RemoveCourse"/>
 </menu>

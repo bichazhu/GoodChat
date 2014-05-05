@@ -1,36 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/chatting_bg"
     tools:context=".MainActivity" >
 
     <ListView
+        android:background="@drawable/chatting_listview_bg"
         android:id="@android:id/list"
+        android:divider="@android:color/transparent"
+        android:listSelector="#00000000"  
+        android:fadingEdge="none"  
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/listFooter"
         android:layout_alignParentTop="true"
         android:transcriptMode="alwaysScroll" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/listFooter"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
-
-        <EditText
-            android:id="@+id/messageInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        android:background="@android:color/darker_gray"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
         <ImageButton
             android:id="@+id/sendButton"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_send" />
-    </LinearLayout>
+
+        <EditText
+            android:id="@+id/messageInput"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_alignTop="@id/sendButton"
+            android:layout_alignBottom="@id/sendButton"
+            android:layout_toLeftOf="@id/sendButton"
+            android:background="@drawable/edit_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#6C7476"
+    android:background="@drawable/bg"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -19,9 +19,9 @@
             android:gravity="center"
             android:paddingBottom="30dp"
             android:text="GoodChat"
-            android:textColor="#66A7C5"
+            android:textColor="#CCCCCC"
             android:textSize="50sp"
-            android:textStyle="italic" />
+            android:fontFamily="light" />
 
         <EditText
             android:id="@+id/edittext_Login_Username"
@@ -56,9 +56,11 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:text="Login"
-            android:textColor="#000000"
-            android:textStyle="italic" />
-
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" 
+            android:background="@drawable/btn_create_course_bg" />
+		
+        <!-- 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -67,16 +69,20 @@
             android:text="or"
             android:textColor="#66A7C5"
             android:textStyle="italic|bold" />
+            
+            -->
 
         <Button
             android:id="@+id/button_SignUp"
+           
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:text="Sign Up"
-            android:textColor="#000000"
-            android:textStyle="italic" />
+            android:textSize="20sp" 
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_create_course_bg" />
     </LinearLayout>
 
 </LinearLayout>

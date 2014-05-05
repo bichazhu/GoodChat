@@ -5,27 +5,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".SessionRoomHost" >
-
-    <LinearLayout
+    
+    <RelativeLayout
         android:id="@+id/linearlayout_send_message"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
-
+        android:background="@android:color/darker_gray"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+      
         <EditText
-            android:id="@+id/session_host_edittext"
-            android:layout_width="0dp"
+             android:id="@+id/session_host_edittext"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_alignTop="@+id/session_host_sendbtn"
+            android:layout_alignBottom="@+id/session_host_sendbtn"
+            android:layout_toLeftOf="@+id/session_host_sendbtn"
+            android:background="@drawable/edit_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Message..." />
-
-        <Button
+            android:layout_weight="1" 
+            android:hint="Message..."/>
+       
+        <ImageButton
             android:id="@+id/session_host_sendbtn"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
-    </LinearLayout>
+            android:src="@android:drawable/ic_menu_send" />
+        
+      </RelativeLayout>  
 
     <TextView
         android:id="@+id/session_host_textview"
@@ -33,6 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/linearlayout_send_message"
         android:layout_alignParentTop="true"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:textSize="17sp" 
+	/>
 
 </RelativeLayout>

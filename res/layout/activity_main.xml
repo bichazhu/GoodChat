@@ -1,22 +1,56 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity" >
-    
-    <Button 
+    android:gravity="center_horizontal"
+    android:background="@drawable/bg">
+
+    <Button
+      	android:id="@+id/join_btn"
+        android:background="@drawable/btn_create_course_bg"       
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentBottom="true"
+        android:text="Join a Session Room"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp" />
+	 
+    <Button
         android:id="@+id/create_btn"
+        android:background="@drawable/btn_create_course_bg"
+        android:layout_above="@id/join_btn"
+        android:layout_alignLeft="@id/join_btn"
+        android:layout_alignRight="@id/join_btn"
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create a Session Room"
-        />
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"/>
     
-    <Button 
-        android:id="@+id/join_btn"
-        android:layout_width="match_parent"
+    <TextView 
+        android:id="@+id/logoText"
+        android:text="GoodChat"
+        android:textColor="#CCCCCC"
+        android:textStyle="italic"
+        android:fontFamily="light"
+        android:textSize="55sp"
         android:layout_height="wrap_content"
-        android:text="Join a Session Room"
-        />
+        android:layout_width="wrap_content"      
+        android:layout_marginTop="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+   
+</RelativeLayout>
 
-</LinearLayout>
+
+
+
+
+
+
+
+

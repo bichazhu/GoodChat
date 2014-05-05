@@ -1,20 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:background="@drawable/bg">
 
     <Button
         android:id="@+id/button_create_course"
-        android:layout_width="wrap_content"
+        android:background="@drawable/btn_create_course_bg"       
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Course" />
-
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentBottom="true"
+        android:text="Create Course"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+	 
     <Button
         android:id="@+id/button_find_course"
-        android:layout_width="wrap_content"
+        android:background="@drawable/btn_create_course_bg"
+        android:layout_above="@id/button_create_course"
+        android:layout_alignLeft="@id/button_create_course"
+        android:layout_alignRight="@id/button_create_course"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Find Course" />
+        android:text="Find Course" 
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"/>
+    
+    <TextView 
+        android:id="@+id/logoText"
+        android:text="GoodChat"
+        android:textColor="#CCCCCC"
+        android:textStyle="italic"
+        android:fontFamily="light"
+        android:textSize="55sp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"      
+        android:layout_marginTop="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+   
+</RelativeLayout>
 
-</LinearLayout>
+
+
+

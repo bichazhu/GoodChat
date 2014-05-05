@@ -2,10 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#BEBEBE"
     android:orientation="vertical" >
 
     <ListView
         android:id="@+id/listview_courses"
+        android:divider="#C2C2C2"
+        android:background="@android:color/transparent"
+        android:listSelector="@drawable/course_item_bg"
+        android:dividerHeight="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>
