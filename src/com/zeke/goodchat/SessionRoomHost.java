@@ -104,10 +104,8 @@ public class SessionRoomHost extends Activity {
         }
         et.setText("");
         // Hide input method
-        InputMethodManager inputManager = (InputMethodManager)
-            getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-               InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
       }
 
     });

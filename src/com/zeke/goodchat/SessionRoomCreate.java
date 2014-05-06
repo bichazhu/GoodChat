@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
@@ -66,21 +67,25 @@ public class SessionRoomCreate extends Activity {
     btn = (Button)findViewById(R.id.create_view_btn);
     btn.setOnClickListener(new OnClickListener(){
 
-      @Override
-      public void onClick(View view) {
-    	// Once a class is held, the "ClassOn" entry is updated by the host ip
-    	// Other users can join the local network with this ip
-    	ref.child(courseID).child(courseName).child("ClassOn").setValue(myIP);
-        
-        Intent intent = new Intent(SessionRoomCreate.this,SessionRoomHost.class);
-        intent.putExtra("course_id", courseID);
-        intent.putExtra("course_name", courseName);
-        intent.putExtra("UserName", userName);
-        intent.putExtra("MyIPAddress", myIP);
-        intent.putExtra("name_list", getIntent().getExtras().getString("name_list"));
-        intent.putExtra("code", et.getText().toString());
-        startActivity(intent);
-      }
+			@Override
+			public void onClick(View view) {
+				if (!et.getText().toString().isEmpty()) {
+					// Once a class is held, the "ClassOn" entry is updated by the host ip 
+					// Other users can join the local network with this ip
+					ref.child(courseID).child(courseName).child("ClassOn").setValue(myIP);
+
+					Intent intent = new Intent(SessionRoomCreate.this, SessionRoomHost.class);
+					intent.putExtra("course_id", courseID);
+					intent.putExtra("course_name", courseName);
+					intent.putExtra("UserName", userName);
+					intent.putExtra("MyIPAddress", myIP);
+					intent.putExtra("name_list", getIntent().getExtras().getString("name_list"));
+					intent.putExtra("code", et.getText().toString());
+					startActivity(intent);
+				} else {
+					Toast.makeText(getApplicationContext(), "Please enter a code", Toast.LENGTH_SHORT).show();
+				}
+			}
 
     });
   }
