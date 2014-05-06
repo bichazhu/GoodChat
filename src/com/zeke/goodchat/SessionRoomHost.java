@@ -4,18 +4,14 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -45,7 +41,7 @@ public class SessionRoomHost extends Activity {
   private TextView tv;
   private String textViewContent;
   private EditText et;
-  private Button sendBtn;
+  private ImageButton sendBtn;
   
   private Firebase ref;
   
@@ -91,7 +87,7 @@ public class SessionRoomHost extends Activity {
     tv.setMovementMethod(new ScrollingMovementMethod()); // make the textview scrollable
     
     et = (EditText)findViewById(R.id.session_host_edittext);
-    sendBtn = (Button)findViewById(R.id.session_host_sendbtn);
+    sendBtn = (ImageButton)findViewById(R.id.session_host_sendbtn);
     sendBtn.setOnClickListener(new OnClickListener(){
 
       @Override
