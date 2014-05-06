@@ -1,56 +1,58 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/bg"
-    tools:context=".SessionRoomCreate" >
+    android:background="@drawable/bg" >
 
-    <TextView 
+    <TextView
         android:id="@+id/create_view_ip_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My IP:" 
-        android:textSize="20sp"
-        android:textColor="#CCCCCC"/>
-    
-    <TextView 
+        android:text="My IP:"
+        android:textColor="#CCCCCC"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/create_view_name_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Session Room Name"
+        android:layout_below="@id/create_view_ip_textview"
         android:layout_marginTop="15dp"
-        android:textSize="20sp"
-        android:textColor="#CCCCCC"/>
-    
-    <TextView 
+        android:hint="Session Room Name"
+        android:textColor="#CCCCCC"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/create_view_nick_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Your Name"
+        android:layout_below="@id/create_view_name_textview"
         android:layout_marginTop="20dp"
-        android:textSize="15sp"
-        android:textColor="#CCCCCC"/>
+        android:hint="Your Name"
+        android:textColor="#CCCCCC"
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/create_session_code"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:hint="Input today's code here"
-        android:textSize="20sp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/create_view_nick_textview"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:hint="Input today&apos;s code here"
         android:textColor="#CCCCCC"
-        />
-    
-    <Button 
+        android:textSize="20sp" />
+
+    <Button
         android:id="@+id/create_view_btn"
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/create_session_code"
+        android:layout_alignParentRight="true"
         android:background="@drawable/btn_create_course_bg"
-        android:layout_marginTop="15dp"
+        android:text="Create"
         android:textColor="#FFFFFF"
-        android:textSize="20sp" 
-        android:text="Create"/>
+        android:textSize="20sp" />
 
-
-</LinearLayout>
+</RelativeLayout>
