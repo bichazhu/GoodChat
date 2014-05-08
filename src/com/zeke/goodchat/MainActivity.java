@@ -26,7 +26,7 @@ import com.firebase.simplelogin.SimpleLogin;
 public class MainActivity extends Activity implements OnClickListener {
 
   private String username;
-  private Firebase ref;
+  private Firebase ref_to_app;
   private SimpleLogin authClient;
   
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
@@ -40,9 +40,9 @@ public class MainActivity extends Activity implements OnClickListener {
     // Set the username with the login credentials
     setupUsername();
 
-    // First we get a reference to the location of the user's name data:
-    ref = new Firebase(appURL);
-    authClient = new SimpleLogin(ref, this);
+    // First we get a reference to the location of the application
+    ref_to_app = new Firebase(appURL);
+    authClient = new SimpleLogin(ref_to_app, this);
 
     // find the buttons and set them.
     Button createCourse = (Button) findViewById(R.id.button_create_course);
@@ -79,9 +79,11 @@ public class MainActivity extends Activity implements OnClickListener {
     // Handle presses on the action bar items
     switch (item.getItemId()) {
       case R.id.logout:
-        // Logout from Application
+
+    	// Logout from Application
         authClient.logout();
         
+        // Start Login activity can finish this MainActivity
         Intent startLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
         finish();
         startActivity(startLoginActivity);
@@ -92,11 +94,13 @@ public class MainActivity extends Activity implements OnClickListener {
     }
   }
   
+  
   /**
    ***************************************************************************
    Helper Methods below this point. 
    ***************************************************************************
    */
+  
   
   /**
    * Gets the username of the current logged in user from SharedPreferences.
@@ -127,11 +131,11 @@ public class MainActivity extends Activity implements OnClickListener {
   private void createNewCourseAlertDialog() {
     LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 
-    // get the layout view and edit text for the course name
+    // Get the layout view and edit text for the course name
     final View textEntryView = inflater.inflate(R.layout.create_new_course, null);
     final EditText edittext_new_course_name = (EditText) textEntryView.findViewById(R.id.edittext_new_course_name);
     
-    // get the alert dialog ready for user
+    // Get the alert dialog ready for user
     final AlertDialog.Builder alert = new AlertDialog.Builder( MainActivity.this);
     alert.setTitle("Create new Course Chat")
         .setView(textEntryView)
@@ -140,11 +144,15 @@ public class MainActivity extends Activity implements OnClickListener {
               public void onClick( final DialogInterface dialog, int whichButton) {
                 String course_name = edittext_new_course_name.getText().toString();
                 
+                // Check if we have a name for the course
                 if(!course_name.isEmpty()) {
+                	
+                  // Start a GlobalChat for this newly created course
                   Intent startGlobalChatActivity = new Intent(MainActivity.this, GlobalChatActivity.class);
                   startGlobalChatActivity.putExtra("course_id", ""); // empty string (course_id == "") is for us to know we have to create a course
                   startGlobalChatActivity.putExtra("course_name", course_name);
                   startActivity(startGlobalChatActivity);
+                  
                 } else {
                   showShortToast("Please enter a course name");
                 }

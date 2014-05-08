@@ -22,18 +22,24 @@ import com.firebase.simplelogin.SimpleLogin;
 import com.firebase.simplelogin.SimpleLoginAuthenticatedHandler;
 import com.firebase.simplelogin.User;
 
+/**
+ * This Activity will let the user login to the app and also signup.
+ * @author Bin
+ *
+ */
 public class LoginActivity extends Activity implements OnClickListener {
 
   private final String TAG = "LoginActivity";
   
-  private Firebase reference;
+  private final String appURL = "https://intense-fire-8812.firebaseio.com";
+  
+  private Firebase ref_to_app;
   private SimpleLogin authClient;
   
-  private EditText email, password;
+  private EditText email;
+  private EditText password;
   
   private Dialog progressDialog;
-  
-  private final String appURL = "https://intense-fire-8812.firebaseio.com";
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +54,8 @@ public class LoginActivity extends Activity implements OnClickListener {
     progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading ...", true);
     
     // get the reference from Firebase and authClient
-    reference = new Firebase(appURL);
-    authClient = new SimpleLogin(reference, this);
+    ref_to_app = new Firebase(appURL);
+    authClient = new SimpleLogin(ref_to_app, this);
     
     // check for user authentication
     authClient.checkAuthStatus(new SimpleLoginAuthenticatedHandler() {
@@ -104,6 +110,7 @@ public class LoginActivity extends Activity implements OnClickListener {
       return;
     }
     
+    // Check for Login or SignUp options
     switch (v.getId()) {
       case R.id.button_Login:
         
@@ -157,11 +164,13 @@ public class LoginActivity extends Activity implements OnClickListener {
     }
   }
   
+  
   /**
    ***************************************************************************
    Helper Methods below this point. 
    ***************************************************************************
    */
+  
   
   /**
    * Helper method to show a Toast message for short time to the user.
@@ -172,7 +181,7 @@ public class LoginActivity extends Activity implements OnClickListener {
   }
   
   /**
-   * Save the username int SharedPreferences if needed.
+   * Save the username into SharedPreferences if needed.
    * Then start MainActivity.
    */
   private void startMainActivity() {

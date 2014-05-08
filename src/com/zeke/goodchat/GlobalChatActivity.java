@@ -62,13 +62,16 @@ public class GlobalChatActivity extends ListActivity {
 	private String courseID;
 
 	// Array that stores all user names
-	private ArrayList<String> users = new ArrayList<String>();
+	private ArrayList<String> users;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.globalchat);
 
+		// Prepare the list of users
+		users = new ArrayList<String>();
+		
 		// Set the username with the login credentials
 		setupUsername();
 
@@ -187,48 +190,49 @@ public class GlobalChatActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
-
-		case R.id.class_room:
-
-			String userlist = getUserListString();
-			if (userlist != null) {
-
-				// start SessionMainActivity and send values we will need
-				Intent startLocalSessionActivity = new Intent(GlobalChatActivity.this, SessionMainActivity.class);
-				startLocalSessionActivity.putExtra("course_name", courseName);
-				startLocalSessionActivity.putExtra("course_id", courseID);
-				startLocalSessionActivity.putExtra("user_name", currentUser);
-				startLocalSessionActivity.putExtra("title", userTitle);
-				startLocalSessionActivity.putExtra("name_list", userlist);
-				startActivity(startLocalSessionActivity);
-			}
-			return true;
-
-		case R.id.find_previous:
-			
-			// start LectureDatesActivity and send values we will need
-			Intent startLectureDatesActivity = new Intent(GlobalChatActivity.this, LectureDatesActivity.class);
-			startLectureDatesActivity.putExtra("course_name", courseName);
-			startLectureDatesActivity.putExtra("course_id", courseID);
-			startLectureDatesActivity.putExtra("user_name", currentUser);
-			startLectureDatesActivity.putExtra("title", userTitle);
-			startActivity(startLectureDatesActivity);
-			return true;
-
-		case R.id.add_user:
-			showAddUserDialog();
-			return true;
-
-		case R.id.remove_course:
-			if (userTitle.equals("creator")) {
-				showDeleteConfirmationDialog();
-			} else {
-				showShortToast("You did not create this course.\nCan not remove this course!");
-			}
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-
+	
+			case R.id.class_room:
+				
+				String userlist = getUserListString();
+				if (userlist != null) {
+	
+					// start SessionMainActivity and send values we will need
+					Intent startLocalSessionActivity = new Intent(GlobalChatActivity.this, SessionMainActivity.class);
+					startLocalSessionActivity.putExtra("course_name", courseName);
+					startLocalSessionActivity.putExtra("course_id", courseID);
+					startLocalSessionActivity.putExtra("user_name", currentUser);
+					startLocalSessionActivity.putExtra("title", userTitle);
+					startLocalSessionActivity.putExtra("name_list", userlist);
+					startActivity(startLocalSessionActivity);
+				}
+				return true;
+	
+			case R.id.find_previous:
+				
+				// start LectureDatesActivity and send values we will need
+				Intent startLectureDatesActivity = new Intent(GlobalChatActivity.this, LectureDatesActivity.class);
+				startLectureDatesActivity.putExtra("course_name", courseName);
+				startLectureDatesActivity.putExtra("course_id", courseID);
+				startLectureDatesActivity.putExtra("user_name", currentUser);
+				startLectureDatesActivity.putExtra("title", userTitle);
+				startActivity(startLectureDatesActivity);
+				return true;
+	
+			case R.id.add_user:
+				showAddUserDialog();
+				return true;
+	
+			case R.id.remove_course:
+				
+				// Check if user is the creator of the course
+				if (userTitle.equals("creator")) {
+					showDeleteConfirmationDialog();
+				} else {
+					showShortToast("You did not create this course.\nCan not remove this course!");
+				}
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -321,67 +325,78 @@ public class GlobalChatActivity extends ListActivity {
 	 * Get user list from database
 	 */
 	private void getUserList() {
-		users.clear();
-		Firebase baseref = new Firebase(appURL + "/GlobalChat/").child(courseID).child(courseName);
-		Firebase ref = baseref.child("UserList");
-		ref.addChildEventListener(new ChildEventListener() {
-			@Override
-			public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-				String username = snapshot.getName();
-
-				if (!username.equals("")) {
-					users.add(username);
+		
+		if(users != null) {
+			
+			// clear the current list
+			users.clear();
+			
+			Firebase baseref = new Firebase(appURL + "/GlobalChat/").child(courseID).child(courseName);
+			Firebase ref = baseref.child("UserList");
+			ref.addChildEventListener(new ChildEventListener() {
+				@Override
+				public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+					String username = snapshot.getName();
+	
+					if (!username.equals("")) {
+						users.add(username);
+					}
 				}
-			}
-
-			@Override
-			public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-				String username = snapshot.getName();
-
-				if (!username.equals("")) {
-					users.add(username);
+	
+				@Override
+				public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+					String username = snapshot.getName();
+	
+					if (!username.equals("")) {
+						users.add(username);
+					}
 				}
-			}
-
-			@Override
-			public void onChildRemoved(DataSnapshot snapshot) {
-				String username = snapshot.getName();
-
-				if (!username.equals("")) {
-					users.remove(username);
+	
+				@Override
+				public void onChildRemoved(DataSnapshot snapshot) {
+					String username = snapshot.getName();
+	
+					if (!username.equals("")) {
+						users.remove(username);
+					}
 				}
-			}
-
-			@Override
-			public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-				// We do not need to implement this part.
-			}
-
-			@Override
-			public void onCancelled(FirebaseError arg0) {
-				// We do not need to implement this part.
-			}
-		});
+	
+				@Override
+				public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+					// We do not need to implement this part.
+				}
+	
+				@Override
+				public void onCancelled(FirebaseError arg0) {
+					// We do not need to implement this part.
+				}
+			});
+		}
 	}
 
 	/**
 	 * Get a name list, format like: "user1, user2, user3, ..." This string will
 	 * be passed to local session and be used to take attendance.
 	 * 
-	 * @return
+	 * @return list or ""
 	 */
 	private String getUserListString() {
-		if (users.size() == 0) {
-			getUserList();
-			return null;
+		
+		if(users != null) {
+			if (users.size() == 0) {
+				getUserList();
+				return null;
+			}
+	
+			String str_list = users.get(0);
+			for (int i = 1; i < users.size(); i++) {
+				str_list += ", " + users.get(i);
+			}
+			
+			return str_list;
 		}
 
-		String str = users.get(0);
-		for (int i = 1; i < users.size(); i++) {
-			str += ", " + users.get(i);
-		}
-
-		return str;
+		return "";
 	}
 
 	/**

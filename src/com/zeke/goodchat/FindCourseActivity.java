@@ -16,10 +16,16 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.zeke.goodchat.adapters.CourseListAdapter;
 
+/**
+ * This class lets the user find a course he/she.
+ * It will show the list of all courses available.
+ * @author Bin
+ *
+ */
 public class FindCourseActivity extends Activity {
 
   private Firebase ref_global_chat;
-  ListView listview;
+  private ListView listview_courses;
   private String username;
 
   private final String appURL = "https://intense-fire-8812.firebaseio.com";
@@ -30,7 +36,10 @@ public class FindCourseActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.course_list);
     
+    // set the title in the ActionBar
     setTitle("Find Course");
+    
+    // get the username of the current user
     username = getIntent().getStringExtra("username");
     
     // First we get a reference to the location of the user's name data:
@@ -38,19 +47,22 @@ public class FindCourseActivity extends Activity {
 
     // set the adapter to the listview showing all available courses
     CourseListAdapter adapter = new CourseListAdapter(this, ref_global_chat);
-    listview =  (ListView) findViewById(R.id.listview_courses);
-    listview.setAdapter(adapter);
+    listview_courses =  (ListView) findViewById(R.id.listview_courses);
+    listview_courses.setAdapter(adapter);
     
-    listview.setOnItemClickListener(new OnItemClickListener() {
+    listview_courses.setOnItemClickListener(new OnItemClickListener() {
 
       @Override
       public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+    	  
+    	// OnClick we check if we are enrolled on this course before continuing.
         TextView course_name = (TextView) v.findViewById(R.id.textview_course_name);        
         checkAccessibility(course_name.getText().toString());
       }
     });
     
   }
+  
   
   /**
    ***************************************************************************
@@ -88,8 +100,11 @@ public class FindCourseActivity extends Activity {
    * @param courseName
    */
   private void checkAccessibility(String courseName){
+	  
+	  // Split the course name and check the path reference in the database
 	  String path[] = courseName.split(ID_SEPARATOR);
 	  ref_global_chat.child(path[1]).child(path[0]).child("UserList").child(username).addListenerForSingleValueEvent(new ValueEventListener(){
+		  
 		@Override
 		public void onCancelled(FirebaseError arg0) {
 		}
