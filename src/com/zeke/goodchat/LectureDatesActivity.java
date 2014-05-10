@@ -25,7 +25,7 @@ public class LectureDatesActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.course_list);
+    setContentView(R.layout.list);
     
     courseID = getIntent().getStringExtra("course_id");
     courseName = getIntent().getStringExtra("course_name");
@@ -37,7 +37,7 @@ public class LectureDatesActivity extends Activity {
     ref = ref.child(courseID).child(courseName);
 
     LectureDatesListAdapter adapter = new LectureDatesListAdapter(this, ref);
-    listview =  (ListView) findViewById(R.id.listview_courses);
+    listview =  (ListView) findViewById(R.id.listview_list);
     listview.setAdapter(adapter);
     
     listview.setOnItemClickListener(new OnItemClickListener() {

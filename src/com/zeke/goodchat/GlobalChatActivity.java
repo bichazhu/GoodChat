@@ -221,7 +221,11 @@ public class GlobalChatActivity extends ListActivity {
 			case R.id.add_user:
 				showAddUserDialog();
 				return true;
-	
+				
+			case R.id.remove_users:
+				showRemoveUserDialog();
+				return true;
+				
 			case R.id.remove_course:
 				
 				// Check if user is the creator of the course
@@ -439,7 +443,7 @@ public class GlobalChatActivity extends ListActivity {
 		View view = factory.inflate(R.layout.activity_user_list, null);
 
 		// set the adapter in the listview
-		final UserListAdapter adapter = new UserListAdapter(this, ref_to_course);
+		final UserListAdapter adapter = new UserListAdapter(this, ref_to_course, true);	// true to indicate we are adding users to this course
 		ListView lv = (ListView) view.findViewById(R.id.listview_users);
 		lv.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
@@ -471,5 +475,40 @@ public class GlobalChatActivity extends ListActivity {
 		dialog.setCancelable(true);
 		dialog.show();
 	}
+	
+	/**
+	 * This method will remove users if we are the creator of this course.
+	 */
+	private void showRemoveUserDialog() {
+
+		// Only creator can remove users
+		if (!userTitle.equals("creator")) {
+			showShortToast("You did not create this course.\nCan not remove users!");
+			return;
+		}
+
+		// get the view ready
+		LayoutInflater factory = LayoutInflater.from(this);
+		View view = factory.inflate(R.layout.activity_user_list, null);
+
+		// set the adapter in the listview
+		UserListAdapter adapter = new UserListAdapter(this, ref_to_course, false);	// false to indicate we are not adding users to this course
+		ListView lv = (ListView) view.findViewById(R.id.listview_users);
+		lv.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+
+		// Since we are reusing a view, we need to hide some features we do not need
+		EditText et_user = (EditText) view.findViewById(R.id.edittext_add_user);
+		et_user.setVisibility(View.GONE);
+		Button add_user = (Button) view.findViewById(R.id.button_add_user);
+		add_user.setVisibility(View.GONE);
+
+		// Set the dialog features and show it.
+		Dialog dialog = new Dialog(this);
+		dialog.setContentView(view);
+		dialog.setTitle("Remove users");
+		dialog.setCancelable(true);
+		dialog.show();
+	}	
 	
 }

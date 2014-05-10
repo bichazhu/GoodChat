@@ -6,13 +6,14 @@
     android:orientation="vertical" >
 
     <ListView
-        android:id="@+id/listview_courses"
-        android:divider="#C2C2C2"
-        android:background="@android:color/transparent"
-        android:listSelector="@drawable/course_item_bg"
-        android:dividerHeight="1dp"
+        android:id="@+id/listview_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:divider="#C2C2C2"
+        android:dividerHeight="1dp"
+        android:focusable="true"
+        android:listSelector="@drawable/course_item_bg" >
     </ListView>
 
 </LinearLayout>

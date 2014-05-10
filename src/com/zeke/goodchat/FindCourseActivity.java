@@ -34,7 +34,7 @@ public class FindCourseActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.course_list);
+    setContentView(R.layout.list);
     
     // set the title in the ActionBar
     setTitle("Find Course");
@@ -47,7 +47,7 @@ public class FindCourseActivity extends Activity {
 
     // set the adapter to the listview showing all available courses
     CourseListAdapter adapter = new CourseListAdapter(this, ref_global_chat);
-    listview_courses =  (ListView) findViewById(R.id.listview_courses);
+    listview_courses =  (ListView) findViewById(R.id.listview_list);
     listview_courses.setAdapter(adapter);
     
     listview_courses.setOnItemClickListener(new OnItemClickListener() {

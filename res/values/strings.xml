@@ -3,9 +3,13 @@
 
     <string name="app_name">GoodChat</string>
     <string name="Logout">Logout</string>
+    <string name="Remove">Remove</string>
+    
+    <!-- GlobalChat ActionBar -->
     <string name="FindPrevious">Previous Lectures</string>
     <string name="ClassRoom">Go to Classroom</string>
     <string name="AddNewUser">Add New User</string>
+    <string name="RemoveUsers">Remove Users</string>
     <string name="RemoveCourse">Remove Course</string>
 
 </resources>

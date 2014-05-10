@@ -82,7 +82,7 @@ public class CourseListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int index, View view, ViewGroup viewGroup) {
 
-		view = layoutInflater.inflate(R.layout.course, viewGroup, false);
+		view = layoutInflater.inflate(R.layout.course_item, viewGroup, false);
 
 		TextView course_name = (TextView) view.findViewById(R.id.textview_course_name);
 		course_name.setText(courses.get(index));

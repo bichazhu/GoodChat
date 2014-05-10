@@ -100,7 +100,7 @@ public class LectureDatesListAdapter extends BaseAdapter {
     @Override
     public View getView(int index, View view, ViewGroup viewGroup) {
       
-      view = layoutInflater.inflate(R.layout.course, viewGroup, false);
+      view = layoutInflater.inflate(R.layout.course_item, viewGroup, false);
       
       TextView course_date = (TextView) view.findViewById(R.id.textview_course_name);
       course_date.setText(courseDates.get(index));
