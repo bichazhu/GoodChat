@@ -44,6 +44,7 @@ public class SessionRoomJoin extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_join_session_room);
     
+    // Textview is used to show host's IP
     tv = (TextView)findViewById(R.id.join_session_hostIP);
     
     userName = getIntent().getExtras().getString("user_name");
@@ -59,14 +60,17 @@ public class SessionRoomJoin extends Activity {
 
 		@Override
 		public void onDataChange(DataSnapshot snap) {
+			// Get host's IP from firebase and show it
 			hostIP = (String) snap.getValue();
 			tv.setText(hostIP);
 		}
 		  
 	  });
     
+    // Edittext is used to input unique session code
     et = (EditText)findViewById(R.id.join_session_code);
     
+    // Join session button
     btn = (Button)findViewById(R.id.join_session_button);
     btn.setOnClickListener(new OnClickListener(){
 
@@ -75,6 +79,7 @@ public class SessionRoomJoin extends Activity {
     	if(!hostIP.equals("none"))
     	{
 	        // Send a hello msg to server
+	        // Wait for a response from server
 	        String helloMsg = "HELLO, "+userName+", "+et.getText().toString();
 	        new SendThread(helloMsg,SessionRoomUtil.SEND_PORT,hostIP,SessionRoomUtil.RECEIVE_PORT).start();
     	}
@@ -93,8 +98,8 @@ public class SessionRoomJoin extends Activity {
     st.start();
   }
 
-
-
+  // Sense thread is used to receive messages from server
+  // Messages are also parsed and different actions are taken
   private class SenseThread extends Thread{
     public boolean continueSenseThread;
     private DatagramSocket receiveSocket = null;
@@ -113,8 +118,10 @@ public class SessionRoomJoin extends Activity {
       try {
         while(continueSenseThread)
         {
+		  // Parse the message: IP, HEAD, ...
           String msg = SessionRoomUtil.receiveMessage(receiveSocket);
           String []str = msg.split(", ");
+          // WELCOME message: IP, WELCOME, sessionroomname
           if(str[1].equals("WELCOME"))
           {
             Intent intent = new Intent(SessionRoomJoin.this,SessionRoomClient.class);
@@ -123,6 +130,8 @@ public class SessionRoomJoin extends Activity {
             intent.putExtra("UserName", userName);
             startActivity(intent);
           }
+          // DECLINE message: IP, DECLINE, sessionroomname
+          // Due to wrong session code
           if(str[1].equals("DECLINE"))
           {
             createToast("Wrong code. Request is declined!");
@@ -146,6 +155,8 @@ public class SessionRoomJoin extends Activity {
 
   };
 
+  // A send thread is used to handle all messages to be sent
+  // Functions about sending messages are in SessionRoomUtil class
   private class SendThread extends Thread{
     private final int sendPort;
     private final String destIP;

@@ -21,12 +21,13 @@ public class SessionMainActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    
+    // Get information from previous activity
     title = getIntent().getExtras().getString("title");
     courseID = getIntent().getExtras().getString("course_id");
     courseName = getIntent().getExtras().getString("course_name");
     userName = getIntent().getExtras().getString("user_name");
 
+	// Create button is used to create a new session
     createBtn = (Button)findViewById(R.id.create_btn);
     createBtn.setOnClickListener(new OnClickListener(){
 
@@ -47,6 +48,7 @@ public class SessionMainActivity extends Activity {
 
     });
     
+    // Join button is used to join an exsisting session
     joinBtn = (Button)findViewById(R.id.join_btn);
     joinBtn.setOnClickListener(new OnClickListener(){
 

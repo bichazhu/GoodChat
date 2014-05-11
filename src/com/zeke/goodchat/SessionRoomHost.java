@@ -24,7 +24,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-
+/**
+ * Host activity
+ */
 public class SessionRoomHost extends Activity {
 
   private static final int FILE_SELECT_CODE = 0;
@@ -57,6 +59,7 @@ public class SessionRoomHost extends Activity {
   
   private int nextUser;
   
+  // Private class to store each user's information
   private class UserInfo{
     String name;
     String addr;
@@ -71,6 +74,7 @@ public class SessionRoomHost extends Activity {
     }
   };
 
+  // A array storing all connected users
   volatile ArrayList<UserInfo> users = new ArrayList<UserInfo>();
   
   @Override
@@ -78,7 +82,8 @@ public class SessionRoomHost extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_session_room_host);
     
-    // Initial user list
+    // Initial user list. A string of user list enrolled in the course is
+    // passed to this activity
     getUserList(getIntent().getExtras().getString("name_list"));
     
     ref = new Firebase(appURL + "/GlobalChat/");
@@ -87,6 +92,8 @@ public class SessionRoomHost extends Activity {
     tv.setMovementMethod(new ScrollingMovementMethod()); // make the textview scrollable
     
     et = (EditText)findViewById(R.id.session_host_edittext);
+    
+    // Send message button
     sendBtn = (ImageButton)findViewById(R.id.session_host_sendbtn);
     sendBtn.setOnClickListener(new OnClickListener(){
 
@@ -117,6 +124,7 @@ public class SessionRoomHost extends Activity {
     myIP = getIntent().getStringExtra("MyIPAddress");
     code = getIntent().getStringExtra("code");
     
+    // Add the host into users list and marked as "attend"
     users.add(new UserInfo(myName,myIP));
     userAtt.put(myName, true);
 
@@ -134,6 +142,7 @@ public class SessionRoomHost extends Activity {
     rt.start();
   }
 
+  // A receive thread in host to receive all messges from clients
   private class ReceiveThread extends Thread{
     public boolean continueReceiveThread;
     private DatagramSocket receiveSocket;
@@ -173,7 +182,8 @@ public class SessionRoomHost extends Activity {
 	            });
 	            String welcomeMsg = "WELCOME, "+sessionRoomName;
 	            new SendThread(welcomeMsg,SessionRoomUtil.SEND_PORT,str[0],SessionRoomUtil.RECEIVE_PORT).start();
-	
+				
+				// Add the new-comer into user list and marked as "attend"
 	            UserInfo tmp = new UserInfo(str[2],str[0]);
 	            if(!users.contains(tmp))
 	            {
@@ -189,6 +199,7 @@ public class SessionRoomHost extends Activity {
             }
           }
           // Respond "beacon" msg to discovery
+          // Not used in the this project
           if(str[1].equals("DISCOVERY"))
           {
             Log.d("DEBUG", "Received a DISCOVERY message");
@@ -221,7 +232,7 @@ public class SessionRoomHost extends Activity {
             }
 
           }
-          // "poll" msg
+          // "poll" msg: IP, POLL, choice
           if(str[1].equals("POLL"))
           {
         	if(str[2].equals("A"))
@@ -240,7 +251,11 @@ public class SessionRoomHost extends Activity {
             });
 
           }
-       // "file" msg
+          
+          // "file" msg
+          // A response from client indicating whether or not it's ready
+          // to receive a file
+          // IP, FILE, YES/NO/COMPLETE
           if(str[1].equals("FILE"))
           {
         	if(str[2].equals("YES"))
@@ -275,6 +290,7 @@ public class SessionRoomHost extends Activity {
                   }
                 });
                 
+                // Hand out file to next user
                 nextUser ++;
                 handOutFile();
         	}
@@ -282,6 +298,7 @@ public class SessionRoomHost extends Activity {
 
           }
           // "end" msg
+          // A client exit
           if(str[1].equals("END"))
           {
             Log.d("DEBUG", "Received a END message");
@@ -340,6 +357,7 @@ public class SessionRoomHost extends Activity {
     }
   };
   
+  // A SendFileThread is used to send a file with TCP
   private class SendFileThread extends Thread{
 	  private final int sendPort;
 	  private final String destIP;
@@ -445,6 +463,7 @@ public class SessionRoomHost extends Activity {
 	  for(int i=0;i<users.length;i++)
 	  {
 		  userList.add(users[i]);
+		  // Initial all userAtt as false
 		  userAtt.put(users[i], false);
 	  }
   }
@@ -500,6 +519,7 @@ public class SessionRoomHost extends Activity {
 	  super.onActivityResult(requestCode, resultCode, data);
   }
 
+  // File is sent to users one by one to avoid conflicts
   private void handOutFile(){
 	  if(filePath!=null)
 	  {

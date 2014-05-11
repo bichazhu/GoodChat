@@ -40,6 +40,7 @@ public class SessionRoomCreate extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_create_session_room);
     
+    // Get information from previous activity
     courseID = getIntent().getExtras().getString("course_id");
     courseName = getIntent().getExtras().getString("course_name");
     userName = getIntent().getExtras().getString("user_name");
@@ -47,6 +48,7 @@ public class SessionRoomCreate extends Activity {
     // First we get a reference to the location of the user's name data:
     ref = new Firebase(appURL + "/GlobalChat/");
     
+    // Show the host IP on layout
     IPTv = (TextView)findViewById(R.id.create_view_ip_textview);
 
     try {
@@ -56,14 +58,18 @@ public class SessionRoomCreate extends Activity {
       e.printStackTrace();
     }
     
+    // Show course name
     courseNameTv = (TextView)findViewById(R.id.create_view_name_textview);
     courseNameTv.setText(courseName + ID_SEPARATOR + courseID);
     
+    // Show user name
     userNameTv = (TextView)findViewById(R.id.create_view_nick_textview);
     userNameTv.setText(userName);
     
+    // Edit text is used to input unique code for the session room
     et = (EditText)findViewById(R.id.create_session_code);
     
+    // Create a new session room
     btn = (Button)findViewById(R.id.create_view_btn);
     btn.setOnClickListener(new OnClickListener(){
 
@@ -90,6 +96,7 @@ public class SessionRoomCreate extends Activity {
     });
   }
 
+  // Get IP of current device
   public String getIPAddress() throws UnknownHostException {
     WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
     DhcpInfo dhcp = wifi.getDhcpInfo();
@@ -100,6 +107,7 @@ public class SessionRoomCreate extends Activity {
     return InetAddress.getByAddress(quads).getHostAddress();
   }
 
+  // Get subnet mask of current device
   public String getSubnetMask() throws UnknownHostException {
     WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
     DhcpInfo dhcp = wifi.getDhcpInfo();
